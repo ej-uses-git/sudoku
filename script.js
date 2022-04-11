@@ -12,6 +12,9 @@ class Tile {
         //the tile's stored number
         this._storedValue = 0; //0 is an empty tile
 
+        //the tile's displayed number
+        this._displayValue = 0; //0 is no displayed number
+
         //the html element this tile represents
         this._asElement = document.getElementById(stringId).firstElementChild;
     }
@@ -22,18 +25,19 @@ class Tile {
     get colNumber() { return this._colNumber; }
     get boxNumber() { return this._boxNumber; }
     get storedValue() { return this._storedValue; }
+    get displayValue() { return this._displayValue; }
     get asElement() { return this._asElement; }
 
     //methods:
     //method for setting the stored value
     writeToTile(input){
         this._storedValue = input;
+        this._displayValue = input;
     }
 
-    //method for revealing the stored value in the element
-    revealTile(){
-        this._asElement.value = this._storedValue;
-        this._asElement.setAttribute('disabled', '');
+    //method for hiding the value of the tile
+    hide(){
+        this._displayValue = 0;
     }
 
     //method for clearing user input from a tile
@@ -131,16 +135,25 @@ const createPuzzle = (tiles, numOfFilledTiles) => {
     (preferably, this is done by ERASING instead of REVEALING - erase a number, check if possible, continue, etc...)
     */
 
-    //variable to keep track of filled tiles
-    const tileIndexes = [];
-    for(let i = 0; i < 81; i++) tileIndexes.push(i);
-    for(let i = 0; i < numOfFilledTiles; i++){
-        const index = Math.floor(Math.random() * tileIndexes.length);
-        let revealedTile = tiles[tileIndexes[index]];
-        tileIndexes.splice(index, 1);
-
-        revealedTile.revealTile();
+    const indexes = [];
+    for(let i = 0; i < 81; i++){
+        indexes.push(i);
     }
+    for(let i = 0; i < 81 - numOfFilledTiles; i++){
+        //selecting a random, unselected tile
+        let rand = Math.floor(Math.random() * indexes.length);
+        let currTile = tiles[indexes[rand]];
+        indexes.splice(rand, 1);
+
+        //hiding the tile
+        currTile.hide();
+    }
+
+    //showing every non-hidden tile to the user
+    tiles.filter(tile => tile.displayValue !== 0).forEach(tile => {
+        tile.asElement.value = tile.displayValue;
+        tile.asElement.setAttribute('disabled', '');
+    });
 }
 
 //function to trigger the win screen
