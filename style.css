@@ -1,0 +1,272 @@
+/*variables for changing from lightmode to darkmode*/
+:root {
+    --main: black;
+    --second: white;
+    --alt: #dfdfdf;
+}
+
+/*general styles*/
+* {
+    box-sizing: border-box;
+    position: relative;
+
+    z-index: 5;
+}
+
+body {
+    font-family: sans-serif;
+
+    color: var(--second);
+    background-color: var(--main);
+}
+
+/*sudoku board*/
+table {
+    display: block;
+
+    width: 405px;
+    height: 405px;
+
+    margin: auto;
+
+    border: 1px solid var(--alt);
+}
+
+.box-row, .in-box-row {
+    display: block;
+    
+    width: 100%;
+    height: 33.3%;
+}
+
+.box, .tile {
+    display: inline-block;
+    
+    width: 33.3%;
+    height: 100%;
+    
+    border: 1.25px solid var(--alt);
+}
+
+.tile {
+    text-align: center;
+}
+
+input {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    text-align: center;
+
+    outline: none;
+    border: none;
+
+    color: var(--alt);
+    opacity: 90%;
+    background-color: inherit;
+}
+
+input:disabled {
+    font-weight: bold;
+}
+
+.green {
+    color: green;
+}
+
+.red {
+    color: red;
+    font-weight: bold;
+}
+
+
+/*footer and header*/
+h1 {
+    display: block;
+
+    width: 400px;
+
+    margin: auto;
+    margin-top: 25px;
+    text-align: center;
+}
+
+p {
+    width: 400px;
+
+    margin: 20px auto;
+    text-align: center;
+
+    font-size: 14px;
+
+    opacity: 95%;
+}
+
+p.footnote {
+    margin-top: 10px;
+    margin-bottom: 0px;
+
+    font-size: 12px;
+}
+
+a {
+    font-size: 14px;
+
+    color: var(--alt);
+    
+    text-decoration: none ;
+}
+
+a:hover {
+    color: var(--alt);
+    
+    text-decoration: underline;
+}
+
+/*win screen*/
+.hidden {
+    visibility: hidden;
+
+    z-index: 0;
+}
+
+#win_screen {
+    position: absolute;
+    display: block;
+
+    z-index: 10;
+    
+    width: 410px;
+    height: 450px;
+
+    left: 0;
+    right: 0;
+    margin-top: 50px;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+
+    border-radius: 2%;
+
+    color: var(--main);
+    background-color: var(--second);
+}
+
+#win_screen.heading {
+    margin-top: 30px;
+    margin-bottom: 5px;
+}
+
+#win_screen.subheading {
+    margin-top: 5px;
+}
+
+#stats {
+    width: 90%;
+    margin-top: 75px;
+    margin-right: auto;
+    margin-bottom: 55px;
+    margin-left: auto;
+
+    border: 1px solid var(--main);
+    border-radius: 3%;
+}
+
+.stat-label {
+    width: fit-content;
+
+    margin: 8px auto 5px;
+
+    font-size: 15px;
+}
+
+.stat-label h3 {
+    margin: 0;
+    
+    font-size: 16px;
+}
+
+.stat-holder {
+    margin-bottom: 10px;
+}
+
+.stat-block {
+    display: inline-block;
+
+    width: 150px;
+    height: 95px;
+    margin-right: 10px;
+    margin-left: 10px;
+    
+    vertical-align: top;
+    
+    border: 1px solid var(--main);
+    border-radius: 5%;
+
+    background-color: var(--alt);
+}
+
+.stat-block h4 {
+    width: 100px;
+
+    margin: 10px auto;
+}
+
+.stat-block div {
+    width: 50px;
+    height: 20px;
+
+    margin: auto;
+
+    font-weight: bold;
+}
+
+#new_game {
+    width: 150px;
+    height: 75px;
+
+    margin-bottom: 30px;
+
+    border-radius: 5%;
+    border: 2.5px solid var(--main);
+
+    font-weight: bold;
+
+    color: var(--alt);
+    background-color: var(--main);
+}
+
+#new_game:hover {
+    cursor: pointer;
+
+    color: var(--main);
+    background-color: var(--alt);
+}
+
+/*light/dark mode button*/
+.mode-selector {
+    display: block;
+
+    width: 90px;
+
+    margin-top: 20px;
+    margin-right: auto;
+    margin-left: auto;
+
+    border-radius: 5%;
+    border: 2.5px solid var(--alt);
+
+    font-weight: bold;
+
+    color: var(--alt);
+    background-color: var(--main);
+}
+
+.mode-selector:hover {
+    cursor: pointer;
+
+    color: var(--main);
+    background-color: var(--alt);
+}

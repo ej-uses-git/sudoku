@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Sudoku</title>
+    <link rel="stylesheet" href="./style.css"/>
+    <link rel="icon" type="image/x-icon" href="./favicon.ico"/>
+</head>
+<body>
+    <div id="win_screen" class="hidden">
+        <h2 class="heading">CONGRATULATIONS!</h1>
+        <h3 class="subheading">You solved the puzzle.</h3>
+        <div id="stats">
+          <div class="stat-label">
+            <h3>Your stats for this puzzle:</h3>
+          </div>
+          <div class="stat-holder">
+            <div id="number_of_mistakes" class="stat-block">
+              <h4>Number of mistakes:</h4>
+              <div id="mistake_stat"></div>
+            </div>
+            <div id="time_elapsed" class="stat-block">
+              <h4>Time elapsed:</h4>
+              <div id="time_stat"></div>
+            </div>
+          </div>
+        </div>
+        <button id="new_game">NEW GAME</button>
+    </div>
+    <header>
+        <h1>PLAY SUDOKU</h1>
+        <p>(Click <a href="./rules.html" target="_blank">here</a> for the rules)</p>
+    </header>
+    <main>
+        <table>
+
+        </table>
+    </main>
+    <footer>
+        <button class="mode-selector">Light Mode</button>
+        <p class="footnote">Website coded and designed by Evyatar Shafran</p>
+    </footer>
+    <script type="text/javascript" src="./script.js"></script>
+</body>
+</html>
