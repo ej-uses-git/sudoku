@@ -245,17 +245,20 @@ document.addEventListener('keyup', e => {
 //checking if we already have a set mode
 let root = document.querySelector(':root');
 let modeButton = document.querySelector('.mode-selector');
+let favicon = document.querySelector('link[rel="icon"]');
 if(localStorage.getItem('colormode') === 'light'){
     //we are in light mode
     root.style.setProperty('--main', 'white');
     root.style.setProperty('--second', 'black');
     root.style.setProperty('--alt', '#333');
+    favicon.setAttribute('href', './light_favicon.ico');
     modeButton.textContent = 'Dark Mode';
 } else if(localStorage.getItem('colormode') === 'dark'){
     //we are in dark mode
     root.style.setProperty('--main', 'black');
     root.style.setProperty('--second', 'white');
     root.style.setProperty('--alt', '#dfdfdf');
+    favicon.setAttribute('href', './dark_favicon.ico');
     modeButton.textContent = 'Light Mode';
 } else {
     //default: light mode
@@ -263,6 +266,7 @@ if(localStorage.getItem('colormode') === 'light'){
     root.style.setProperty('--main', 'white');
     root.style.setProperty('--second', 'black');
     root.style.setProperty('--alt', '#333');
+    favicon.setAttribute('href', './light_favicon.ico');
     modeButton.textContent = 'Dark Mode';
 }
 
@@ -274,6 +278,7 @@ modeButton.addEventListener('click', () => {
         root.style.setProperty('--main', 'black');
         root.style.setProperty('--second', 'white');
         root.style.setProperty('--alt', '#dfdfdf');
+        favicon.setAttribute('href', './dark_favicon.ico');
         modeButton.textContent = 'Light Mode'
     } else if(localStorage.getItem('colormode') === 'dark'){
         //set to light mode
@@ -281,6 +286,7 @@ modeButton.addEventListener('click', () => {
         root.style.setProperty('--main', 'white');
         root.style.setProperty('--second', 'black');
         root.style.setProperty('--alt', '#333');
+        favicon.setAttribute('href', './light_favicon.ico');
         modeButton.textContent = 'Dark Mode';
     }
 });
