@@ -48,6 +48,21 @@ class Tile {
             this._asElement.className = ''; //reset the color of the text
         }
     }
+
+    //check user input against the stored value
+    checkInput(){
+        if(this._asElement.value){
+            if(Number(this._asElement.value) === this._storedValue){
+                this._asElement.setAttribute('disabled', '');
+                this._asElement.className = 'green';
+                return 0;
+            } else {
+                this._asElement.value = this._asElement.value;
+                this._asElement.className = 'red';
+                return 1;
+            }
+        }
+    }
 }
 
 //function that rewrites an array of tiles' stored values to an array of saved values
@@ -72,6 +87,7 @@ const emptyBoard = arr => {
 
 //function that generates a solved sudoku board
 const generateBoard = (tiles, rows, columns, boxes) => {
+    let overallAttempts = 0;
     //variables for retrying upon difficult state
     let numOfAttempts = 0;
     let saveState = saveTiles(tiles);
@@ -79,10 +95,11 @@ const generateBoard = (tiles, rows, columns, boxes) => {
 
     //looping until all tiles are empty
     attempt: while(tiles.filter(tile => tile.storedValue === 0).length){
+        overallAttempts++;
         numOfAttempts++;
 
         //checking if too many attempts were done
-        if(numOfAttempts > 50){
+        if(numOfAttempts > 25){
             numOfAttempts = 0;
             savedNumber = 1;
             emptyBoard(tiles);
@@ -215,6 +232,7 @@ let tiles = []; //an array of tiles as objects
 for(let i = 0; i < 81; i++){
     tiles.push(new Tile(`tile_${i}`));
 }
+let tilesAsElements = tiles.map(tile => tile.asElement); //an array of the HTML elements of the tiles
 
 //filtering the tiles into rows, columns, and boxes
 let rows = [];
@@ -225,6 +243,7 @@ for(let i = 0; i < 9; i++){
     columns.push(tiles.filter(tile => tile.colNumber === i));
     boxes.push(tiles.filter(tile => tile.boxNumber === i));
 }
+
 
 //starting a game when the website is loaded
 let startTime = Date.now();
@@ -238,10 +257,37 @@ tiles.forEach(tile => tile.asElement.addEventListener('focus', tile.clearTile())
 document.addEventListener('keyup', e => {
     if(e.code.includes('Enter')){
         //check every filled tile
+        tiles.filter(tile => !tile.asElement.hasAttribute('disabled') && tile.asElement.value !== '').forEach(tile => {
+            let mistake = tile.checkInput();
+            mistakeCounter += mistake;
+        });
 
         //if puzzle is solved - trigger winscreen
+        if(tiles.filter(tile => tile.asElement.hasAttribute('disabled')).length === 81){
+            let endTime = Date.now();
+            let miliseconds = endTime - startTime;
+            let minutes = Math.floor(miliseconds/1000/60);
+            let minutesFirstDigit = Math.floor(minutes/10);
+            let minutesSecondDigit = minutes - minutesFirstDigit*10;
+            let seconds = Math.floor((miliseconds - minutes*1000*60)/1000);
+            let secondsFirstDigit = Math.floor(seconds/10);
+            let secondsSecondDigit = seconds - secondsFirstDigit*10;
+            winScreen(mistakeCounter, `${minutesFirstDigit}${minutesSecondDigit}:${secondsFirstDigit}${secondsSecondDigit}`);
+            newgameButton.addEventListener('click', () => {
+                let screen = document.getElementById('win_screen');
+                screen.className = 'hidden';
+                emptyBoard(tiles);
+                generateBoard(tiles, rows, columns, boxes);
+                createPuzzle(tiles, 50)
+                mistakeCounter = 0;
+                startTime = Date.now();
+            });
+        }
     } else if(e.code.includes('Backspace' || 'Delete')){
         //clear the colors of the currently-selected tile
+        if(tilesAsElements.includes(document.activeElement)){
+            document.activeElement.className = '';
+        }
     }
 });
 
