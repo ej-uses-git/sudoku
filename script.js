@@ -244,8 +244,8 @@ document.addEventListener('keyup', e => {
 //light and dark mode:
 //checking if we already have a set mode
 let root = document.querySelector(':root');
+let modeButton = document.querySelector('.mode-selector');
 let favicon = document.querySelector('link[rel="icon"]');
-let modeButton = document.getElementById('mode-selector');
 if(localStorage.getItem('colormode') === 'light'){
     //we are in light mode
     root.style.setProperty('--main', 'white');
