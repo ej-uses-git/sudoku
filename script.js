@@ -157,22 +157,6 @@ const winScreen = (numOfMistakes, timeElapsed) => {
 {
     let table = document.querySelector('table'); //selecting the table element
     let tileIdCounter = 0;
-    const tileHolder = [];
-    /*
-    NOTE: this can be done without temporary storage. To be fixed.
-    */
-    for(let i = 0; i < 81; i++){
-        //creating every tile and temporarily storing it
-        let tile = document.createElement('td');
-        let input = document.createElement('input');
-        tile.setAttribute('id', `tile_${i}`);
-        tile.setAttribute('class', 'tile');
-        input.setAttribute('maxlength', '1');
-        input.setAttribute('oninput', 'this.value=this.value.replace(/[^1-9]/g,\'\');');
-        tile.appendChild(input);
-        tileHolder.push(tile);
-    }
-
     for(let i = 0; i < 3; i++){
         //creating rows of boxes
         let boxrow = document.createElement('tr');
@@ -199,7 +183,14 @@ const winScreen = (numOfMistakes, timeElapsed) => {
         inboxrows.forEach(ibr => {
             if(ibr.getAttribute('name').includes(i)){
                 for(let j = 0; j < 3; j++){
-                    ibr.appendChild(tileHolder[tileIdCounter]);
+                    let tile = document.createElement('td');
+                    let input = document.createElement('input');
+                    tile.setAttribute('id', `tile_${tileIdCounter}`);
+                    tile.setAttribute('class', 'tile');
+                    input.setAttribute('maxlength', '1');
+                    input.setAttribute('oninput', 'this.value=this.value.replace(/[^1-9]/g,\'\');');
+                    tile.appendChild(input);
+                    ibr.appendChild(tile);
                     tileIdCounter++;
                 }
             }
