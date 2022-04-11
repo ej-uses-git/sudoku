@@ -1,8 +1,8 @@
 /*variables for changing from lightmode to darkmode*/
 :root {
-    --main: black;
-    --second: white;
-    --alt: #dfdfdf;
+    --main: white;
+    --second: black;
+    --alt: #333;
 }
 
 /*general styles*/
