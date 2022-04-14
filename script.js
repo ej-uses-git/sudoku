@@ -1,25 +1,20 @@
-//creating a class for tiles on a sudoku board
 class Tile {
     constructor(stringId){
-        //the tile's id as a number
         this._id = Number(stringId.slice(stringId.indexOf('_') + 1));
 
-        //the tile's row, column, and box numbers
         this._rowNumber = Math.floor(this._id/9);
         this._colNumber = this._id % 9;
         this._boxNumber = (Math.floor(this._id/3) % 3) + (Math.floor(this._rowNumber/3) * 3);
 
-        //the tile's stored number
-        this._storedValue = 0; //0 is an empty tile
+        this._storedValue = 0;
+        this._displayValue = 0;
+        this._solverValue = 0;
+        this._deletable = true;
 
-        //the tile's displayed number
-        this._displayValue = 0; //0 is no displayed number
-
-        //the html element this tile represents
         this._asElement = document.getElementById(stringId).firstElementChild;
     }
 
-    //getters for the properties
+    //getters
     get id() { return this._id; }
     get rowNumber() { return this._rowNumber; }
     get colNumber() { return this._colNumber; }
@@ -27,29 +22,36 @@ class Tile {
     get storedValue() { return this._storedValue; }
     get displayValue() { return this._displayValue; }
     get asElement() { return this._asElement; }
+    get solverValue() { return this._solverValue; }
+    get deletable() { return this._deletable; }
+    //setters
+    set solverValue(input) { this._solverValue = input; }
+    set deletable(input) { this._deletable = input; }
 
     //methods:
-    //method for setting the stored value
     writeToTile(input){
         this._storedValue = input;
         this._displayValue = input;
+        this._solverValue = input;
     }
 
-    //method for hiding the value of the tile
     hide(){
         this._displayValue = 0;
+        this._solverValue = 0;
     }
 
-    //method for clearing user input from a tile
-    clearTile(){
-        //if this is a tile with user input (i.e. not disabled)
+    reveal(){
+        this._displayValue = this._storedValue;
+        this._solverValue = this._storedValue;
+    }
+
+    clearInput(){
         if(!this._asElement.hasAttribute('disabled')){ 
-            this._asElement.value = ''; //reset the input
-            this._asElement.className = ''; //reset the color of the text
+            this._asElement.value = ''; 
+            this._asElement.className = '';
         }
     }
 
-    //check user input against the stored value
     checkInput(){
         if(this._asElement.value){
             if(Number(this._asElement.value) === this._storedValue){
@@ -65,17 +67,14 @@ class Tile {
     }
 }
 
-//function that rewrites an array of tiles' stored values to an array of saved values
 const rewriteTiles = (arr, save) => {
     for(let i = 0; i < save.length; i++){
         arr[i].writeToTile(save[i]);
     }
 }
 
-//function that returns an array of saved values from an array of tiles
 const saveTiles = arr => arr.map(tile => tile.storedValue);
 
-//function that empties the board
 const emptyBoard = arr => {
     arr.forEach(tile => {
         tile.writeToTile(0);
@@ -85,20 +84,14 @@ const emptyBoard = arr => {
     });
 }
 
-//function that generates a solved sudoku board
 const generateBoard = (tiles, rows, columns, boxes) => {
-    let overallAttempts = 0;
-    //variables for retrying upon difficult state
     let numOfAttempts = 0;
     let saveState = saveTiles(tiles);
     let savedNumber = 1;
 
-    //looping until all tiles are empty
     attempt: while(tiles.filter(tile => tile.storedValue === 0).length){
-        overallAttempts++;
         numOfAttempts++;
 
-        //checking if too many attempts were done
         if(numOfAttempts > 25){
             numOfAttempts = 0;
             savedNumber = 1;
@@ -107,134 +100,204 @@ const generateBoard = (tiles, rows, columns, boxes) => {
             continue attempt;
         }
 
-        //reset to the last savestate
         rewriteTiles(tiles, saveState);
 
-        //iterate through each number from 1-9
         for(let i = savedNumber; i <= 9; i++){
-            //iterate through each row on the board
             for(let j = 0; j < 9; j++){
                 let currRow = rows[j];
 
-                let availableTiles = currRow.filter(tile => tile.storedValue === 0); //an array of the empty tiles in the current row
+                let availableTiles = currRow.filter(tile => tile.storedValue === 0);
                 let filled = false;
                 while(availableTiles.length){
-                    //selecting a tile
                     let index = Math.floor(Math.random() * availableTiles.length);
                     let currTile = availableTiles[index];
-                    availableTiles.splice(index, 1); //making the tile unavailable
+                    availableTiles.splice(index, 1);
 
-                    //checking if it's legal to put this number (i) in this tile (currTile)
                     const isInBox = saveTiles(boxes[currTile.boxNumber]).includes(i);
                     const isInCol = saveTiles(columns[currTile.colNumber]).includes(i);
                     if(!isInBox && !isInCol){
-                        //if it is - filling the tile
                         currTile.writeToTile(i);
                         filled = true;
                         break;
                     }
 
-                    //if there are no options in this row, try again
                     if(!availableTiles.length && !filled) continue attempt;
                 }
-            } //after we filled in a certain number, we save
+            }
             saveState = saveTiles(tiles);
             savedNumber = i + 1;
         }
     }
 }
 
-//function that takes a filled board and turns it into a sudoku puzzle
-const createPuzzle = (tiles, numOfFilledTiles) => {
-    /* 
-    NOTE: this needs a different, more complex algorithm, that will not allow impossible puzzles
-    for this, a solving algorithm is required, that checks if the given puzzle allows only one solution
-    (preferably, this is done by ERASING instead of REVEALING - erase a number, check if possible, continue, etc...)
-    */
+const seeSolverVal = (arr) => arr.map(tile => tile.solverValue);
+const isInRow = (rows, tile, num) => seeSolverVal(rows[tile.rowNumber]).includes(num);
+const isInCol = (columns, tile, num) => seeSolverVal(columns[tile.colNumber]).includes(num);
+const isInBox = (boxes, tile, num) => seeSolverVal(boxes[tile.boxNumber]).includes(num);
+const legal = (rows, columns, boxes, tile, num) => !isInRow(rows, tile, num) && !isInCol(columns, tile, num) && !isInBox(boxes, tile, num);
 
-    const indexes = [];
+const resetSolver = (arr, save) => {
+    for(let i = 0; i < arr.length; i++){
+        arr[i].solverValue = save[i];
+    }
+}
+
+const getMoves = (rows, columns , boxes, tile) => {
+    let moves = [];
+    for (let i = 1; i <= 9; i++) {
+        if (legal(rows, columns, boxes, tile, i)) {
+            moves.push(i);
+        }
+    }
+    return moves;
+}
+
+const bestBet = (emptyTiles, rows, columns, boxes) => {
+    let tileIndex;
+    let bestLength = 10;
+    for(let i = 0; i < emptyTiles.length; i++){
+        let moves = getMoves(rows, columns, boxes, emptyTiles[i]);
+        if(moves.length < bestLength){
+            bestLength = moves.length;
+            tileIndex = i;
+        }
+    }
+    return tileIndex;
+}
+
+const check = (tiles, rows, columns, boxes) => {
+    let emptyTiles = tiles.filter(tile => tile.solverValue === 0);
+    if(emptyTiles.length === 0){
+        return true;
+    }
+    
+    let bestTile = emptyTiles[bestBet(emptyTiles, rows, columns, boxes)];
+    let moves = getMoves(rows, columns, boxes, bestTile);
+    for(let move of moves){
+        bestTile.solverValue = move;
+        if(check(tiles, rows, columns, boxes)){
+            return true;
+        }
+    };
+    bestTile.solverValue = 0;
+    return false;
+}
+
+const valid = (tiles, rows, columns, boxes) => {
+    let saveState = seeSolverVal(tiles);
+    let count = 0;
+    while(true){
+        let emptyTiles = tiles.filter(tile => tile.solverValue === 0);
+        if(emptyTiles.length === 0){
+            count = 1;
+            break;
+        }
+        
+        let bestTile = emptyTiles[bestBet(emptyTiles, rows, columns, boxes)];
+        let moves = getMoves(rows, columns, boxes, bestTile);
+        if(moves.length === 1){
+            bestTile.solverValue = moves[0];
+        } else {
+            for(let move of moves){
+                bestTile.solverValue = move;
+                if(check(tiles, rows, columns, boxes)){
+                    count++;
+                    if(count > 1){
+                        break;
+                    }
+                }
+            };
+            break;
+        }
+    }
+    resetSolver(tiles, saveState);
+    return count === 1;
+}
+
+const createPuzzle = (tiles, numOfFilledTiles) => {
+    if(numOfFilledTiles < 17) throw new Error('a sudoku board with less than 17 filled tiles cannot have only one solution');
+
+    const full = [];
+    let indexes = [];
     for(let i = 0; i < 81; i++){
+        full.push(i);
         indexes.push(i);
     }
-    for(let i = 0; i < 81 - numOfFilledTiles; i++){
-        //selecting a random, unselected tile
-        let rand = Math.floor(Math.random() * indexes.length);
-        let currTile = tiles[indexes[rand]];
-        indexes.splice(rand, 1);
 
-        //hiding the tile
-        currTile.hide();
+    for(let i = 0; i < 81 - numOfFilledTiles; i++){
+        if(indexes.length === 0){
+            indexes = full.slice();
+            i = 0;
+            for(let tile of tiles){
+                tile.reveal();
+                tile.deletable = true;
+            }
+        }
+        let rand = Math.floor(Math.random() * indexes.length);
+        let selectedTile = tiles[indexes[rand]];
+        if(!selectedTile.deletable){
+            i--;
+        } else {
+            selectedTile.hide();
+            if(!valid(tiles, rows, columns, boxes)){
+                selectedTile.reveal();
+                selectedTile.deletable = false;
+                i--;
+            }
+        }
+        indexes.splice(rand, 1);
     }
 
-    //showing every non-hidden tile to the user
     tiles.filter(tile => tile.displayValue !== 0).forEach(tile => {
         tile.asElement.value = tile.displayValue;
         tile.asElement.setAttribute('disabled', '');
     });
 }
 
-//function to trigger the win screen
-const winScreen = (numOfMistakes, timeElapsed) => {
-    let screen = document.getElementById('win_screen');
-    let mistakeStat = document.getElementById('mistake_stat');
-    let timeStat = document.getElementById('time_stat');
-    mistakeStat.textContent = numOfMistakes;
-    timeStat.textContent = timeElapsed;
-    screen.className = ''; //making the screen visible
-}
-
-//setting the actual sudoku board in html
-{
-    let table = document.querySelector('table'); //selecting the table element
-    let tileIdCounter = 0;
-    for(let i = 0; i < 3; i++){
-        //creating rows of boxes
-        let boxrow = document.createElement('tr');
-        boxrow.setAttribute('class', 'box-row');
-        for(let j = 0; j < 3; j++){
-            //creating boxes
-            let box = document.createElement('td');
-            box.setAttribute('class', 'box');
-            for(let k = 0; k < 3; k++){
-                //creating rows of tiles (within the boxes)
-                let inboxrow = document.createElement('tr');
-                inboxrow.setAttribute('class', 'in-box-row');
-                inboxrow.setAttribute('name', `row_${(i * 3) + k}`);
-                box.appendChild(inboxrow);
-            }
-            boxrow.appendChild(box);
+let table = document.querySelector('table');
+let tileIdCounter = 0;
+for(let i = 0; i < 3; i++){
+    let boxrow = document.createElement('tr');
+    boxrow.setAttribute('class', 'box-row');
+    for(let j = 0; j < 3; j++){
+        let box = document.createElement('td');
+        box.setAttribute('class', 'box');
+        for(let k = 0; k < 3; k++){
+            let inboxrow = document.createElement('tr');
+            inboxrow.setAttribute('class', 'in-box-row');
+            inboxrow.setAttribute('name', `row_${(i * 3) + k}`);
+            box.appendChild(inboxrow);
         }
-        table.appendChild(boxrow);
+        boxrow.appendChild(box);
     }
-
-    let inboxrows = document.querySelectorAll('.in-box-row');
-    for(let i = 0; i < 9; i++){
-        //placing the tiles from the temporary storage into the in-box-rows
-        inboxrows.forEach(ibr => {
-            if(ibr.getAttribute('name').includes(i)){
-                for(let j = 0; j < 3; j++){
-                    let tile = document.createElement('td');
-                    let input = document.createElement('input');
-                    tile.setAttribute('id', `tile_${tileIdCounter}`);
-                    tile.setAttribute('class', 'tile');
-                    input.setAttribute('maxlength', '1');
-                    input.setAttribute('oninput', 'this.value=this.value.replace(/[^1-9]/g,\'\');');
-                    tile.appendChild(input);
-                    ibr.appendChild(tile);
-                    tileIdCounter++;
-                }
-            }
-        });
-    }
+    table.appendChild(boxrow);
 }
 
-let tiles = []; //an array of tiles as objects
+let inboxrows = document.querySelectorAll('.in-box-row');
+for(let i = 0; i < 9; i++){
+    inboxrows.forEach(ibr => {
+        if(ibr.getAttribute('name').includes(i)){
+            for(let j = 0; j < 3; j++){
+                let tile = document.createElement('td');
+                let input = document.createElement('input');
+                tile.setAttribute('id', `tile_${tileIdCounter}`);
+                tile.setAttribute('class', 'tile');
+                input.setAttribute('maxlength', '1');
+                input.setAttribute('oninput', 'this.value=this.value.replace(/[^1-9]/g,\'\');');
+                tile.appendChild(input);
+                ibr.appendChild(tile);
+                tileIdCounter++;
+            }
+        }
+    });
+}
+
+let tiles = [];
 for(let i = 0; i < 81; i++){
     tiles.push(new Tile(`tile_${i}`));
 }
-let tilesAsElements = tiles.map(tile => tile.asElement); //an array of the HTML elements of the tiles
+let tilesAsElements = tiles.map(tile => tile.asElement);
 
-//filtering the tiles into rows, columns, and boxes
 let rows = [];
 let columns = [];
 let boxes = [];
@@ -244,25 +307,29 @@ for(let i = 0; i < 9; i++){
     boxes.push(tiles.filter(tile => tile.boxNumber === i));
 }
 
+const winScreen = (numOfMistakes, timeElapsed) => {
+    let screen = document.getElementById('win_screen');
+    let mistakeStat = document.getElementById('mistake_stat');
+    let timeStat = document.getElementById('time_stat');
+    mistakeStat.textContent = numOfMistakes;
+    timeStat.textContent = timeElapsed;
+    screen.className = '';
+}
 
-//starting a game when the website is loaded
 let startTime = Date.now();
 let newgameButton = document.getElementById('new_game');
 let mistakeCounter = 0;
 generateBoard(tiles, rows, columns, boxes);
-createPuzzle(tiles, 50);
+createPuzzle(tiles, 30);
 
-//player inputs:
-tiles.forEach(tile => tile.asElement.addEventListener('focus', tile.clearTile()));
+tiles.forEach(tile => tile.asElement.addEventListener('focus', tile.clearInput()));
 document.addEventListener('keyup', e => {
     if(e.code.includes('Enter')){
-        //check every filled tile
         tiles.filter(tile => !tile.asElement.hasAttribute('disabled') && tile.asElement.value !== '').forEach(tile => {
             let mistake = tile.checkInput();
             mistakeCounter += mistake;
         });
 
-        //if puzzle is solved - trigger winscreen
         if(tiles.filter(tile => tile.asElement.hasAttribute('disabled')).length === 81){
             let endTime = Date.now();
             let miliseconds = endTime - startTime;
@@ -278,13 +345,12 @@ document.addEventListener('keyup', e => {
                 screen.className = 'hidden';
                 emptyBoard(tiles);
                 generateBoard(tiles, rows, columns, boxes);
-                createPuzzle(tiles, 50)
+                createPuzzle(tiles, 50);
                 mistakeCounter = 0;
                 startTime = Date.now();
             });
         }
     } else if(e.code.includes('Backspace' || 'Delete')){
-        //clear the colors of the currently-selected tile
         if(tilesAsElements.includes(document.activeElement)){
             document.activeElement.className = '';
         }
@@ -292,7 +358,6 @@ document.addEventListener('keyup', e => {
 });
 
 //light and dark mode:
-//checking if we already have a set mode
 let root = document.querySelector(':root');
 let modeButton = document.querySelector('.mode-selector');
 let favicon = document.querySelector('link[rel="icon"]');
@@ -320,7 +385,6 @@ if(localStorage.getItem('colormode') === 'light'){
     modeButton.textContent = 'Dark Mode';
 }
 
-//making the mode button work
 modeButton.addEventListener('click', () => {
     if(localStorage.getItem('colormode') === 'light'){
         //set to dark mode
