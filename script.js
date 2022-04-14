@@ -316,47 +316,6 @@ const winScreen = (numOfMistakes, timeElapsed) => {
     screen.className = '';
 }
 
-let startTime = Date.now();
-let newgameButton = document.getElementById('new_game');
-let mistakeCounter = 0;
-generateBoard(tiles, rows, columns, boxes);
-createPuzzle(tiles, 30);
-
-tiles.forEach(tile => tile.asElement.addEventListener('focus', tile.clearInput()));
-document.addEventListener('keyup', e => {
-    if(e.code.includes('Enter')){
-        tiles.filter(tile => !tile.asElement.hasAttribute('disabled') && tile.asElement.value !== '').forEach(tile => {
-            let mistake = tile.checkInput();
-            mistakeCounter += mistake;
-        });
-
-        if(tiles.filter(tile => tile.asElement.hasAttribute('disabled')).length === 81){
-            let endTime = Date.now();
-            let miliseconds = endTime - startTime;
-            let minutes = Math.floor(miliseconds/1000/60);
-            let minutesFirstDigit = Math.floor(minutes/10);
-            let minutesSecondDigit = minutes - minutesFirstDigit*10;
-            let seconds = Math.floor((miliseconds - minutes*1000*60)/1000);
-            let secondsFirstDigit = Math.floor(seconds/10);
-            let secondsSecondDigit = seconds - secondsFirstDigit*10;
-            winScreen(mistakeCounter, `${minutesFirstDigit}${minutesSecondDigit}:${secondsFirstDigit}${secondsSecondDigit}`);
-            newgameButton.addEventListener('click', () => {
-                let screen = document.getElementById('win_screen');
-                screen.className = 'hidden';
-                emptyBoard(tiles);
-                generateBoard(tiles, rows, columns, boxes);
-                createPuzzle(tiles, 50);
-                mistakeCounter = 0;
-                startTime = Date.now();
-            });
-        }
-    } else if(e.code.includes('Backspace' || 'Delete')){
-        if(tilesAsElements.includes(document.activeElement)){
-            document.activeElement.className = '';
-        }
-    }
-});
-
 //light and dark mode:
 let root = document.querySelector(':root');
 let modeButton = document.querySelector('.mode-selector');
@@ -384,7 +343,6 @@ if(localStorage.getItem('colormode') === 'light'){
     favicon.setAttribute('href', './light_favicon.ico');
     modeButton.textContent = 'Dark Mode';
 }
-
 modeButton.addEventListener('click', () => {
     if(localStorage.getItem('colormode') === 'light'){
         //set to dark mode
@@ -402,5 +360,87 @@ modeButton.addEventListener('click', () => {
         root.style.setProperty('--alt', '#333');
         favicon.setAttribute('href', './light_favicon.ico');
         modeButton.textContent = 'Dark Mode';
+    }
+});
+
+let diffScreen = document.getElementById('difficulty_settings');
+let diffButtons = document.querySelectorAll('.diff');
+let confirmButton = document.querySelector('.confirm');
+let diff = 0;
+diffButtons.forEach(button => {
+    let ogClassName = button.className;
+    button.addEventListener('focus', () => {
+        button.className += ' clicked';
+        switch(button.id){
+            case 'easy':
+                diff = 50;
+                break;
+            case 'medium':
+                diff = 35;
+                break;
+            case 'hard':
+                diff = 25;
+                break;
+            case 'very':
+                diff = 20;
+                break;
+        }
+    });
+
+    button.addEventListener('blur', () => {
+        button.className = ogClassName;
+        setTimeout(() => {
+            diff = 0;
+        }, 300);
+    });
+});
+
+confirmButton.addEventListener('click', () => {
+    if(diff !== 0){
+        let startTime = Date.now();
+        let newgameButton = document.getElementById('new_game');
+        let mistakeCounter = 0;
+        generateBoard(tiles, rows, columns, boxes);
+        confirmButton.textContent = 'LOADING...';
+        setTimeout(() => {
+            createPuzzle(tiles, diff);
+            diffScreen.className = 'hidden';
+            table.className = '';
+            
+            tiles.forEach(tile => tile.asElement.addEventListener('focus', tile.clearInput()));
+            document.addEventListener('keyup', e => {
+                if(e.code.includes('Enter')){
+                    tiles.filter(tile => !tile.asElement.hasAttribute('disabled') && tile.asElement.value !== '').forEach(tile => {
+                        let mistake = tile.checkInput();
+                        mistakeCounter += mistake;
+                    });
+                
+                    if(tiles.filter(tile => tile.asElement.hasAttribute('disabled')).length === 81){
+                        let endTime = Date.now();
+                        let miliseconds = endTime - startTime;
+                        let minutes = Math.floor(miliseconds/1000/60);
+                        let minutesFirstDigit = Math.floor(minutes/10);
+                        let minutesSecondDigit = minutes - minutesFirstDigit*10;
+                        let seconds = Math.floor((miliseconds - minutes*1000*60)/1000);
+                        let secondsFirstDigit = Math.floor(seconds/10);
+                        let secondsSecondDigit = seconds - secondsFirstDigit*10;
+                        winScreen(mistakeCounter, `${minutesFirstDigit}${minutesSecondDigit}:${secondsFirstDigit}${secondsSecondDigit}`);
+                        newgameButton.addEventListener('click', () => {
+                            let screen = document.getElementById('win_screen');
+                            screen.className = 'hidden';
+                            emptyBoard(tiles);
+                            generateBoard(tiles, rows, columns, boxes);
+                            createPuzzle(tiles, diff);
+                            mistakeCounter = 0;
+                            startTime = Date.now();
+                        });
+                    }
+                } else if(e.code.includes('Backspace' || 'Delete')){
+                    if(tilesAsElements.includes(document.activeElement)){
+                        document.activeElement.className = '';
+                    }
+                }
+            });
+        }, 100);
     }
 });
