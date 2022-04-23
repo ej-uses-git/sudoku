@@ -25,6 +25,8 @@ class Cell {
     get solverValue() { return this._solverValue; }
     get deletable() { return this._deletable; }
     //setters
+    set storedValue(input) { this._storedValue = input; }
+    set displayValue(input) { this._displayValue = input; }
     set solverValue(input) { this._solverValue = input; }
     set deletable(input) { this._deletable = input; }
 
@@ -57,6 +59,7 @@ class Cell {
             if(Number(this._asElement.value) === this._storedValue){
                 this._asElement.setAttribute('disabled', '');
                 this._asElement.className = 'green';
+                this._displayValue = this._asElement.value;
                 return 0;
             } else {
                 this._asElement.value = this._asElement.value;
@@ -82,6 +85,27 @@ const emptyBoard = arr => {
         cell.asElement.className = '';
         cell.asElement.removeAttribute('disabled');
     });
+}
+
+const fillFromString = (arr, string) => {
+    emptyBoard(arr);
+
+    let place = 0;
+    for(let i = 0; i < string.length; i++){
+        if(string.charAt(i) === '*'){
+            arr[place].asElement.className = 'green';
+        } else {
+            arr[place].displayValue = Number(string.charAt(i));
+            place++;
+        }
+    }
+
+    for(let i = 0; i < arr.length; i++){
+        if(arr[i].displayValue !== 0){
+            arr[i].asElement.value = arr[i].displayValue;
+            arr[i].asElement.setAttribute('disabled', '');
+        }
+    }
 }
 
 const generateBoard = (cells, rows, columns, boxes) => {
@@ -364,7 +388,32 @@ diffButtons.forEach(button => {
     });
 });
 
-function stringGenerate(cells){
+const stringGenerate = cells => {
+    let string = '';
+    for(let cell of cells){
+        if(cell.asElement.className === 'green'){
+            string += '*';
+        }
+        string += cell.displayValue;
+    }
+    return string;
+}
+
+const solutionString = cells => {
+    let string = '';
+    for(let cell of cells){
+        string += cell.storedValue;
+    }
+    return string;
+}
+
+const rememberSolution = (arr, string) => {
+    for(let i = 0; i < arr.length; i++){
+        arr[i].storedValue = Number(string.charAt(i));
+    }
+}
+
+const officialSudokuString = (cells) => {
     let string = '';
     for(let cell of cells){
         if(cell.displayValue === 0){
@@ -376,54 +425,103 @@ function stringGenerate(cells){
     return string;
 }
 
-confirmButton.addEventListener('click', () => {
-    if(diff !== 0){
-        permadiff = diff;
-        let startTime = Date.now();
-        let newgameButton = document.getElementById('new_game');
-        let mistakeCounter = 0;
-        generateBoard(cells, rows, columns, boxes);
-        confirmButton.textContent = 'LOADING...';
-        setTimeout(() => {
-            createPuzzle(cells, diff);
-            console.log(stringGenerate(cells));
-            diffScreen.className = 'hidden';
-            table.className = '';
-            
-            cells.forEach(cell => cell.asElement.addEventListener('focus', () => cell.clearInput()));
-            document.addEventListener('keyup', e => {
-                if(e.code.includes('Enter')){
-                    cells.filter(cell => !cell.asElement.hasAttribute('disabled') && cell.asElement.value !== '').forEach(cell => {
-                        let mistake = cell.checkInput();
-                        mistakeCounter += mistake;
-                    });
-                
-                    if(cells.filter(cell => cell.asElement.hasAttribute('disabled')).length === 81){
-                        let endTime = Date.now();
-                        let miliseconds = endTime - startTime;
-                        let minutes = Math.floor(miliseconds/1000/60);
-                        let minutesFirstDigit = Math.floor(minutes/10);
-                        let minutesSecondDigit = minutes - minutesFirstDigit*10;
-                        let seconds = Math.floor((miliseconds - minutes*1000*60)/1000);
-                        let secondsFirstDigit = Math.floor(seconds/10);
-                        let secondsSecondDigit = seconds - secondsFirstDigit*10;
-                        winScreen(mistakeCounter, `${minutesFirstDigit}${minutesSecondDigit}:${secondsFirstDigit}${secondsSecondDigit}`);
-                        newgameButton.addEventListener('click', () => {
-                            let screen = document.getElementById('win_screen');
-                            screen.className = 'hidden';
-                            emptyBoard(cells);
-                            generateBoard(cells, rows, columns, boxes);
-                            createPuzzle(cells, permadiff);
-                            mistakeCounter = 0;
-                            startTime = Date.now();
-                        });
-                    }
-                } else if(e.code.includes('Backspace' || 'Delete')){
-                    if(cellsAsElements.includes(document.activeElement)){
-                        document.activeElement.className = '';
-                    }
-                }
+
+
+if(localStorage.getItem('currentPuzzle')){
+    fillFromString(cells, localStorage.getItem('currentPuzzle'));
+    rememberSolution(cells, localStorage.getItem('currentSolution'));
+    diffScreen.className = 'hidden';
+    table.className = '';
+} else {
+    confirmButton.addEventListener('click', () => {
+        if(diff !== 0){
+            permadiff = diff;
+            let startTime = Date.now();
+            localStorage.setItem('startTime', String(startTime));
+            let mistakeCounter = 0;
+            localStorage.setItem('mistakeCounter', String(mistakeCounter));
+            generateBoard(cells, rows, columns, boxes);
+            confirmButton.textContent = 'LOADING...';
+            setTimeout(() => {
+                createPuzzle(cells, diff);
+                console.log(officialSudokuString(cells));
+                localStorage.setItem('currentPuzzle', stringGenerate(cells));
+                localStorage.setItem('currentSolution', solutionString(cells));
+                diffScreen.className = 'hidden';
+                table.className = '';
+            }, 100);
+        }
+    });
+}
+
+let resetter = document.querySelector('.reset');
+resetter.addEventListener('click', () => {
+    emptyBoard(cells);
+    localStorage.removeItem('currentPuzzle');
+    localStorage.removeItem('currentSolution');
+    localStorage.removeItem('startTime');
+    localStorage.removeItem('mistakeCounter');
+    diffScreen.className = '';
+    table.className = 'hidden';
+    confirmButton.textContent = 'CONFIRM';
+    confirmButton.addEventListener('click', () => {
+        if(diff !== 0){
+            permadiff = diff;
+            let startTime = Date.now();
+            localStorage.setItem('startTime', String(startTime));
+            let mistakeCounter = 0;
+            localStorage.setItem('mistakeCounter', String(mistakeCounter));
+            generateBoard(cells, rows, columns, boxes);
+            confirmButton.textContent = 'LOADING...';
+            setTimeout(() => {
+                createPuzzle(cells, diff);
+                console.log(officialSudokuString(cells));
+                localStorage.setItem('currentPuzzle', stringGenerate(cells));
+                localStorage.setItem('currentSolution', solutionString(cells));
+                diffScreen.className = 'hidden';
+                table.className = '';
+            }, 100);
+        }
+    });
+})
+cells.forEach(cell => cell.asElement.addEventListener('focus', () => cell.clearInput()));
+document.addEventListener('keyup', e => {
+    if(e.code.includes('Enter')){
+        cells.filter(cell => !cell.asElement.hasAttribute('disabled') && cell.asElement.value !== '').forEach(cell => {
+            let mistake = cell.checkInput();
+            let mistakeCounter = Number(localStorage.getItem('mistakeCounter')) + mistake;
+            localStorage.setItem('mistakeCounter', String(mistakeCounter));
+        });
+        
+        if(cells.filter(cell => cell.asElement.hasAttribute('disabled')).length === 81){
+            let newgameButton = document.getElementById('new_game');
+            let endTime = Date.now();
+            let miliseconds = endTime - Number(localStorage.getItem('startTime'));
+            let minutes = Math.floor(miliseconds/1000/60);
+            let minutesFirstDigit = Math.floor(minutes/10);
+            let minutesSecondDigit = minutes - minutesFirstDigit*10;
+            let seconds = Math.floor((miliseconds - minutes*1000*60)/1000);
+            let secondsFirstDigit = Math.floor(seconds/10);
+            let secondsSecondDigit = seconds - secondsFirstDigit*10;
+            winScreen(localStorage.getItem('mistakeCounter'), `${minutesFirstDigit}${minutesSecondDigit}:${secondsFirstDigit}${secondsSecondDigit}`);
+            newgameButton.addEventListener('click', () => {
+                let screen = document.getElementById('win_screen');
+                screen.className = 'hidden';
+                emptyBoard(cells);
+                generateBoard(cells, rows, columns, boxes);
+                createPuzzle(cells, permadiff);
+                console.log(officialSudokuString(cells));
+                startTime = Date.now();
+                localStorage.setItem('startTime', String(startTime));
+                mistakeCounter = 0;
+                localStorage.setItem('mistakeCounter', String(mistakeCounter));
             });
-        }, 100);
+        }
+        localStorage.setItem('currentPuzzle', stringGenerate(cells));
+        console.log(localStorage.getItem('currentPuzzle'));
+    } else if(e.code.includes('Backspace' || 'Delete')){
+        if(cellsAsElements.includes(document.activeElement)){
+            document.activeElement.className = '';
+        }
     }
 });

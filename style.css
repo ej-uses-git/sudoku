@@ -313,7 +313,7 @@ a:hover {
 }
 
 /*light/dark mode button*/
-.mode-selector {
+.mode-selector, .reset {
     display: block;
 
     width: 90px;
