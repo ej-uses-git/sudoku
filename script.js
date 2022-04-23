@@ -70,14 +70,13 @@ class Cell {
     }
 }
 
+//general functions
+const saveCells = arr => arr.map(cell => cell.storedValue);
 const rewriteCells = (arr, save) => {
     for(let i = 0; i < save.length; i++){
         arr[i].writeToCell(save[i]);
     }
 }
-
-const saveCells = arr => arr.map(cell => cell.storedValue);
-
 const emptyBoard = arr => {
     arr.forEach(cell => {
         cell.writeToCell(0);
@@ -87,6 +86,66 @@ const emptyBoard = arr => {
     });
 }
 
+//solver functions
+const seeSolverVal = (arr) => arr.map(cell => cell.solverValue);
+const isInRow = (rows, cell, num) => seeSolverVal(rows[cell.rowNumber]).includes(num);
+const isInCol = (columns, cell, num) => seeSolverVal(columns[cell.colNumber]).includes(num);
+const isInBox = (boxes, cell, num) => seeSolverVal(boxes[cell.boxNumber]).includes(num);
+const legal = (rows, columns, boxes, cell, num) => !isInRow(rows, cell, num) && !isInCol(columns, cell, num) && !isInBox(boxes, cell, num);
+const getMoves = (rows, columns , boxes, cell) => {
+    let moves = [];
+    for (let i = 1; i <= 9; i++) {
+        if (legal(rows, columns, boxes, cell, i)) {
+            moves.push(i);
+        }
+    }
+    return moves;
+}
+const bestBet = (emptyCells, rows, columns, boxes) => {
+    let cellIndex;
+    let bestLength = 10;
+    for(let i = 0; i < emptyCells.length; i++){
+        let moves = getMoves(rows, columns, boxes, emptyCells[i]);
+        if(moves.length < bestLength){
+            bestLength = moves.length;
+            cellIndex = i;
+        }
+    }
+    return cellIndex;
+}
+const unique = (cells, rows, columns, boxes) => {
+    let counter = 0;
+    const solve = (cells, rows, columns, boxes) => {
+        let emptyCells = cells.filter(cell => cell.solverValue === 0);
+        if(emptyCells.length === 0){
+            counter++;
+            return false;
+        }
+        let bestCell = bestBet(emptyCells, rows, columns, boxes);
+        let moves = getMoves(rows, columns, boxes, emptyCells[bestCell]);
+        for(let m of moves){
+            emptyCells[bestCell].solverValue = m;
+            if(solve(cells, rows, columns, boxes) && counter < 2) return true;
+        }
+        emptyCells[bestCell].solverValue = 0;
+        return false;
+    }
+    solve(cells, rows, columns, boxes);
+    if(counter > 1) return false;
+    return true;
+}
+
+//saving puzzle functions
+const stringGenerate = cells => {
+    let string = '';
+    for(let cell of cells){
+        if(cell.asElement.className === 'green'){
+            string += '*';
+        }
+        string += cell.displayValue;
+    }
+    return string;
+}
 const fillFromString = (arr, string) => {
     emptyBoard(arr);
 
@@ -107,8 +166,32 @@ const fillFromString = (arr, string) => {
         }
     }
 }
+const solutionString = cells => {
+    let string = '';
+    for(let cell of cells){
+        string += cell.storedValue;
+    }
+    return string;
+}
+const rememberSolution = (arr, string) => {
+    for(let i = 0; i < arr.length; i++){
+        arr[i].storedValue = Number(string.charAt(i));
+    }
+}
 
+//UI functions
+const winScreen = (numOfMistakes, timeElapsed) => {
+    let screen = document.getElementById('win_screen');
+    let mistakeStat = document.getElementById('mistake_stat');
+    let timeStat = document.getElementById('time_stat');
+    mistakeStat.textContent = numOfMistakes;
+    timeStat.textContent = timeElapsed;
+    screen.className = '';
+}
+
+//initialization functions
 const generateBoard = (cells, rows, columns, boxes) => {
+    emptyBoard(cells);
     let numOfAttempts = 0;
     let saveState = saveCells(cells);
     let savedNumber = 1;
@@ -153,59 +236,6 @@ const generateBoard = (cells, rows, columns, boxes) => {
         }
     }
 }
-
-const seeSolverVal = (arr) => arr.map(cell => cell.solverValue);
-const isInRow = (rows, cell, num) => seeSolverVal(rows[cell.rowNumber]).includes(num);
-const isInCol = (columns, cell, num) => seeSolverVal(columns[cell.colNumber]).includes(num);
-const isInBox = (boxes, cell, num) => seeSolverVal(boxes[cell.boxNumber]).includes(num);
-const legal = (rows, columns, boxes, cell, num) => !isInRow(rows, cell, num) && !isInCol(columns, cell, num) && !isInBox(boxes, cell, num);
-
-const getMoves = (rows, columns , boxes, cell) => {
-    let moves = [];
-    for (let i = 1; i <= 9; i++) {
-        if (legal(rows, columns, boxes, cell, i)) {
-            moves.push(i);
-        }
-    }
-    return moves;
-}
-
-const bestBet = (emptyCells, rows, columns, boxes) => {
-    let cellIndex;
-    let bestLength = 10;
-    for(let i = 0; i < emptyCells.length; i++){
-        let moves = getMoves(rows, columns, boxes, emptyCells[i]);
-        if(moves.length < bestLength){
-            bestLength = moves.length;
-            cellIndex = i;
-        }
-    }
-    return cellIndex;
-}
-
-const unique = (cells, rows, columns, boxes) => {
-    let counter = 0;
-    const solve = (cells, rows, columns, boxes) => {
-        let emptyCells = cells.filter(cell => cell.solverValue === 0);
-        if(emptyCells.length === 0){
-            counter++;
-            //if(counter > 1) return true;
-            return false;
-        }
-        let bestCell = bestBet(emptyCells, rows, columns, boxes);
-        let moves = getMoves(rows, columns, boxes, emptyCells[bestCell]);
-        for(let m of moves){
-            emptyCells[bestCell].solverValue = m;
-            if(solve(cells, rows, columns, boxes) && counter < 2) return true;
-        }
-        emptyCells[bestCell].solverValue = 0;
-        return false;
-    }
-    solve(cells, rows, columns, boxes);
-    if(counter > 1) return false;
-    return true;
-}
-
 const createPuzzle = (cells, numOfFilledCells) => {
     if(numOfFilledCells < 17) throw new Error('a sudoku board with less than 17 filled cells cannot have only one solution');
 
@@ -246,6 +276,7 @@ const createPuzzle = (cells, numOfFilledCells) => {
     });
 }
 
+//setting the board in html
 let table = document.querySelector('table');
 let cellIdCounter = 0;
 for(let i = 0; i < 3; i++){
@@ -299,62 +330,7 @@ for(let i = 0; i < 9; i++){
     boxes.push(cells.filter(cell => cell.boxNumber === i));
 }
 
-const winScreen = (numOfMistakes, timeElapsed) => {
-    let screen = document.getElementById('win_screen');
-    let mistakeStat = document.getElementById('mistake_stat');
-    let timeStat = document.getElementById('time_stat');
-    mistakeStat.textContent = numOfMistakes;
-    timeStat.textContent = timeElapsed;
-    screen.className = '';
-}
-
-//light and dark mode:
-let root = document.querySelector(':root');
-let modeButton = document.querySelector('.mode-selector');
-let favicon = document.querySelector('link[rel="icon"]');
-if(localStorage.getItem('colormode') === 'light'){
-    //we are in light mode
-    root.style.setProperty('--main', 'white');
-    root.style.setProperty('--second', 'black');
-    root.style.setProperty('--alt', '#333');
-    favicon.setAttribute('href', './light_favicon.ico');
-    modeButton.textContent = 'Dark Mode';
-} else if(localStorage.getItem('colormode') === 'dark'){
-    //we are in dark mode
-    root.style.setProperty('--main', 'black');
-    root.style.setProperty('--second', 'white');
-    root.style.setProperty('--alt', '#dfdfdf');
-    favicon.setAttribute('href', './dark_favicon.ico');
-    modeButton.textContent = 'Light Mode';
-} else {
-    //default: light mode
-    localStorage.setItem('colormode', 'light');
-    root.style.setProperty('--main', 'white');
-    root.style.setProperty('--second', 'black');
-    root.style.setProperty('--alt', '#333');
-    favicon.setAttribute('href', './light_favicon.ico');
-    modeButton.textContent = 'Dark Mode';
-}
-modeButton.addEventListener('click', () => {
-    if(localStorage.getItem('colormode') === 'light'){
-        //set to dark mode
-        localStorage.setItem('colormode', 'dark');
-        root.style.setProperty('--main', 'black');
-        root.style.setProperty('--second', 'white');
-        root.style.setProperty('--alt', '#dfdfdf');
-        favicon.setAttribute('href', './dark_favicon.ico');
-        modeButton.textContent = 'Light Mode'
-    } else if(localStorage.getItem('colormode') === 'dark'){
-        //set to light mode
-        localStorage.setItem('colormode', 'light');
-        root.style.setProperty('--main', 'white');
-        root.style.setProperty('--second', 'black');
-        root.style.setProperty('--alt', '#333');
-        favicon.setAttribute('href', './light_favicon.ico');
-        modeButton.textContent = 'Dark Mode';
-    }
-});
-
+//letting user select difficulty
 let diffScreen = document.getElementById('difficulty_settings');
 let diffButtons = document.querySelectorAll('.diff');
 let confirmButton = document.querySelector('.confirm');
@@ -387,47 +363,8 @@ diffButtons.forEach(button => {
         }, 300);
     });
 });
-
-const stringGenerate = cells => {
-    let string = '';
-    for(let cell of cells){
-        if(cell.asElement.className === 'green'){
-            string += '*';
-        }
-        string += cell.displayValue;
-    }
-    return string;
-}
-
-const solutionString = cells => {
-    let string = '';
-    for(let cell of cells){
-        string += cell.storedValue;
-    }
-    return string;
-}
-
-const rememberSolution = (arr, string) => {
-    for(let i = 0; i < arr.length; i++){
-        arr[i].storedValue = Number(string.charAt(i));
-    }
-}
-
-const officialSudokuString = (cells) => {
-    let string = '';
-    for(let cell of cells){
-        if(cell.displayValue === 0){
-            string += '.';
-        } else {
-            string += cell.displayValue;
-        }
-    }
-    return string;
-}
-
-
-
 if(localStorage.getItem('currentPuzzle')){
+    //using storage-saved puzzle
     fillFromString(cells, localStorage.getItem('currentPuzzle'));
     rememberSolution(cells, localStorage.getItem('currentSolution'));
     diffScreen.className = 'hidden';
@@ -454,9 +391,9 @@ if(localStorage.getItem('currentPuzzle')){
     });
 }
 
+//letting user reset to a new puzzle
 let resetter = document.querySelector('.reset');
 resetter.addEventListener('click', () => {
-    emptyBoard(cells);
     localStorage.removeItem('currentPuzzle');
     localStorage.removeItem('currentSolution');
     localStorage.removeItem('startTime');
@@ -483,7 +420,9 @@ resetter.addEventListener('click', () => {
             }, 100);
         }
     });
-})
+});
+
+//setting event listeners
 cells.forEach(cell => cell.asElement.addEventListener('focus', () => cell.clearInput()));
 document.addEventListener('keyup', e => {
     if(e.code.includes('Enter')){
@@ -507,7 +446,6 @@ document.addEventListener('keyup', e => {
             newgameButton.addEventListener('click', () => {
                 let screen = document.getElementById('win_screen');
                 screen.className = 'hidden';
-                emptyBoard(cells);
                 generateBoard(cells, rows, columns, boxes);
                 createPuzzle(cells, permadiff);
                 console.log(officialSudokuString(cells));
@@ -523,5 +461,27 @@ document.addEventListener('keyup', e => {
         if(cellsAsElements.includes(document.activeElement)){
             document.activeElement.className = '';
         }
+    }
+});
+
+//setting colormode button
+let modeButton = document.querySelector('.mode-selector');
+modeButton.addEventListener('click', () => {
+    if(localStorage.getItem('colormode') === 'light'){
+        //set to dark mode
+        localStorage.setItem('colormode', 'dark');
+        root.style.setProperty('--main', 'black');
+        root.style.setProperty('--second', 'white');
+        root.style.setProperty('--alt', '#dfdfdf');
+        favicon.setAttribute('href', './dark_favicon.ico');
+        modeButton.textContent = 'Light Mode'
+    } else if(localStorage.getItem('colormode') === 'dark'){
+        //set to light mode
+        localStorage.setItem('colormode', 'light');
+        root.style.setProperty('--main', 'white');
+        root.style.setProperty('--second', 'black');
+        root.style.setProperty('--alt', '#333');
+        favicon.setAttribute('href', './light_favicon.ico');
+        modeButton.textContent = 'Dark Mode';
     }
 });
