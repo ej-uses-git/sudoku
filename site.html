@@ -16,14 +16,12 @@
           root.style.setProperty('--second', 'black');
           root.style.setProperty('--alt', '#333');
           favicon.setAttribute('href', './light_favicon.ico');
-          modeButton.textContent = 'Dark Mode';
       } else if(localStorage.getItem('colormode') === 'dark'){
           //we are in dark mode
           root.style.setProperty('--main', 'black');
           root.style.setProperty('--second', 'white');
           root.style.setProperty('--alt', '#dfdfdf');
           favicon.setAttribute('href', './dark_favicon.ico');
-          modeButton.textContent = 'Light Mode';
       } else {
           //default: light mode
           localStorage.setItem('colormode', 'light');
@@ -31,7 +29,6 @@
           root.style.setProperty('--second', 'black');
           root.style.setProperty('--alt', '#333');
           favicon.setAttribute('href', './light_favicon.ico');
-          modeButton.textContent = 'Dark Mode';
       }
     </script>
 </head>
@@ -63,6 +60,7 @@
       <button class="diff btn" id="hard">Hard</button>
       <button class="diff btn" id="very">Very Hard</button>
       <button class="confirm btn">CONFIRM</button>
+      <p class="warning"></p>
     </div>
     <header>
         <h1>PLAY SUDOKU</h1>

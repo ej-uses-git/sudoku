@@ -132,6 +132,12 @@ a:hover {
 }
 
 /*general*/
+.hidden {
+    visibility: hidden;
+
+    z-index: 0;
+}
+
 .btn {
     border-radius: 5%;
     border: 2.5px solid var(--alt);
@@ -189,16 +195,18 @@ a:hover {
     width: 90px;
     height: 40px;
     
-    margin: 25px auto;
+    margin: 25px auto 0px;
+}
+
+.warning {
+    display: block;
+
+    margin-top: 10px;
+
+    font-weight: bold;   
 }
 
 /*win screen*/
-.hidden {
-    visibility: hidden;
-
-    z-index: 0;
-}
-
 #win_screen {
     position: absolute;
     display: block;
