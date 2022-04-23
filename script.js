@@ -347,6 +347,7 @@ for(let i = 0; i < 9; i++){
 let diffScreen = document.getElementById('difficulty_settings');
 let diffButtons = document.querySelectorAll('.diff');
 let confirmButton = document.querySelector('.confirm');
+let warning = document.querySelector('.warning');
 let diff = 0;
 let permadiff = 0;
 diffButtons.forEach(button => {
@@ -365,6 +366,7 @@ diffButtons.forEach(button => {
                 break;
             case 'very':
                 diff = 24;
+                warning.textContent = 'WARNING: This may take a while.';
                 break;
         }
     });
@@ -374,6 +376,7 @@ diffButtons.forEach(button => {
         setTimeout(() => {
             diff = 0;
         }, 300);
+        warning.textContent = '';
     });
 });
 if(localStorage.getItem('currentPuzzle')){
