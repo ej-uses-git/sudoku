@@ -70,6 +70,19 @@ class Cell {
     }
 }
 
+//misc functions
+const officialSudokuString = (cells) => {
+    let string = '';
+    for(let cell of cells){
+        if(cell.displayValue === 0){
+            string += '.';
+        } else {
+            string += cell.displayValue;
+        }
+    }
+    return string;
+}
+
 //general functions
 const saveCells = arr => arr.map(cell => cell.storedValue);
 const rewriteCells = (arr, save) => {
@@ -373,6 +386,7 @@ if(localStorage.getItem('currentPuzzle')){
     confirmButton.addEventListener('click', () => {
         if(diff !== 0){
             permadiff = diff;
+            localStorage.setItem('permadiff', String(permadiff));
             let startTime = Date.now();
             localStorage.setItem('startTime', String(startTime));
             let mistakeCounter = 0;
@@ -394,6 +408,7 @@ if(localStorage.getItem('currentPuzzle')){
 //letting user reset to a new puzzle
 let resetter = document.querySelector('.reset');
 resetter.addEventListener('click', () => {
+    localStorage.removeItem('permadiff');
     localStorage.removeItem('currentPuzzle');
     localStorage.removeItem('currentSolution');
     localStorage.removeItem('startTime');
@@ -404,6 +419,7 @@ resetter.addEventListener('click', () => {
     confirmButton.addEventListener('click', () => {
         if(diff !== 0){
             permadiff = diff;
+            localStorage.setItem('permadiff', String(diff));
             let startTime = Date.now();
             localStorage.setItem('startTime', String(startTime));
             let mistakeCounter = 0;
@@ -447,7 +463,9 @@ document.addEventListener('keyup', e => {
                 let screen = document.getElementById('win_screen');
                 screen.className = 'hidden';
                 generateBoard(cells, rows, columns, boxes);
-                createPuzzle(cells, permadiff);
+                createPuzzle(cells, Number(localStorage.getItem('permadiff')));
+                localStorage.setItem('currentPuzzle', stringGenerate(cells));
+                localStorage.setItem('currentSolution', solutionString(cells));
                 console.log(officialSudokuString(cells));
                 startTime = Date.now();
                 localStorage.setItem('startTime', String(startTime));
@@ -466,6 +484,11 @@ document.addEventListener('keyup', e => {
 
 //setting colormode button
 let modeButton = document.querySelector('.mode-selector');
+if(localStorage.getItem('colormode') === 'dark'){
+    modeButton.textContent = 'Light Mode';
+} else {
+    modeButton.textContent = 'Dark Mode';
+}
 modeButton.addEventListener('click', () => {
     if(localStorage.getItem('colormode') === 'light'){
         //set to dark mode
