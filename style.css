@@ -25,6 +25,8 @@ table {
     display: block;
 
     width: 40%;
+    min-width: 300px;
+    max-width: 405px;
     aspect-ratio: 1/1;
 
     margin: auto;
