@@ -24,8 +24,8 @@ body {
 table {
     display: block;
 
-    width: 405px;
-    height: 405px;
+    width: 40%;
+    aspect-ratio: 1/1;
 
     margin: auto;
 
@@ -39,7 +39,7 @@ table {
     height: 33.3%;
 }
 
-.box, .tile {
+.box, .cell {
     display: inline-block;
     
     width: 33.3%;
@@ -48,7 +48,7 @@ table {
     border: 1.25px solid var(--alt);
 }
 
-.tile {
+.cell {
     text-align: center;
 }
 
@@ -79,6 +79,10 @@ input:disabled {
 .red {
     color: red;
     font-weight: bold;
+}
+
+.solved {
+    color: gray;
 }
 
 
@@ -123,6 +127,67 @@ a:hover {
     color: var(--alt);
     
     text-decoration: underline;
+}
+
+/*general*/
+.btn {
+    border-radius: 5%;
+    border: 2.5px solid var(--alt);
+
+    font-weight: bold;
+
+    color: var(--alt);
+    background-color: var(--main);
+}
+
+.btn:hover {
+    cursor: pointer;
+
+    color: var(--main);
+    background-color: var(--alt);
+}
+
+.clicked {
+    color: var(--main);
+    background-color: var(--alt);
+}
+
+/*difficulty screen*/
+#difficulty_settings {
+    position: absolute;
+    display: block;
+
+    z-index: 10;
+    
+    width: 410px;
+    height: 200px;
+
+    left: 0;
+    right: 0;
+    margin-top: 200px;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+
+    border-radius: 2%;
+    border: 1px solid var(--second);
+
+    color: var(--second);
+    background-color: var(--main);
+}
+
+.diff {
+    width: 90px;
+    height: 30px;
+}
+
+.confirm {
+    display: block;
+
+    width: 90px;
+    height: 40px;
+    
+    margin: 25px auto;
 }
 
 /*win screen*/
@@ -254,19 +319,4 @@ a:hover {
     margin-top: 20px;
     margin-right: auto;
     margin-left: auto;
-
-    border-radius: 5%;
-    border: 2.5px solid var(--alt);
-
-    font-weight: bold;
-
-    color: var(--alt);
-    background-color: var(--main);
-}
-
-.mode-selector:hover {
-    cursor: pointer;
-
-    color: var(--main);
-    background-color: var(--alt);
 }

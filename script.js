@@ -1,4 +1,4 @@
-class Tile {
+class Cell {
     constructor(stringId){
         this._id = Number(stringId.slice(stringId.indexOf('_') + 1));
 
@@ -29,7 +29,7 @@ class Tile {
     set deletable(input) { this._deletable = input; }
 
     //methods:
-    writeToTile(input){
+    writeToCell(input){
         this._storedValue = input;
         this._displayValue = input;
         this._solverValue = input;
@@ -67,155 +67,123 @@ class Tile {
     }
 }
 
-const rewriteTiles = (arr, save) => {
+const rewriteCells = (arr, save) => {
     for(let i = 0; i < save.length; i++){
-        arr[i].writeToTile(save[i]);
+        arr[i].writeToCell(save[i]);
     }
 }
 
-const saveTiles = arr => arr.map(tile => tile.storedValue);
+const saveCells = arr => arr.map(cell => cell.storedValue);
 
 const emptyBoard = arr => {
-    arr.forEach(tile => {
-        tile.writeToTile(0);
-        tile.asElement.value = '';
-        tile.asElement.className = '';
-        tile.asElement.removeAttribute('disabled');
+    arr.forEach(cell => {
+        cell.writeToCell(0);
+        cell.asElement.value = '';
+        cell.asElement.className = '';
+        cell.asElement.removeAttribute('disabled');
     });
 }
 
-const generateBoard = (tiles, rows, columns, boxes) => {
+const generateBoard = (cells, rows, columns, boxes) => {
     let numOfAttempts = 0;
-    let saveState = saveTiles(tiles);
+    let saveState = saveCells(cells);
     let savedNumber = 1;
 
-    attempt: while(tiles.filter(tile => tile.storedValue === 0).length){
+    attempt: while(cells.filter(cell => cell.storedValue === 0).length){
         numOfAttempts++;
 
         if(numOfAttempts > 25){
             numOfAttempts = 0;
             savedNumber = 1;
-            emptyBoard(tiles);
-            saveState = saveTiles(tiles);
+            emptyBoard(cells);
+            saveState = saveCells(cells);
             continue attempt;
         }
 
-        rewriteTiles(tiles, saveState);
+        rewriteCells(cells, saveState);
 
         for(let i = savedNumber; i <= 9; i++){
             for(let j = 0; j < 9; j++){
                 let currRow = rows[j];
 
-                let availableTiles = currRow.filter(tile => tile.storedValue === 0);
+                let availableCells = currRow.filter(cell => cell.storedValue === 0);
                 let filled = false;
-                while(availableTiles.length){
-                    let index = Math.floor(Math.random() * availableTiles.length);
-                    let currTile = availableTiles[index];
-                    availableTiles.splice(index, 1);
+                while(availableCells.length){
+                    let index = Math.floor(Math.random() * availableCells.length);
+                    let currCell = availableCells[index];
+                    availableCells.splice(index, 1);
 
-                    const isInBox = saveTiles(boxes[currTile.boxNumber]).includes(i);
-                    const isInCol = saveTiles(columns[currTile.colNumber]).includes(i);
+                    const isInBox = saveCells(boxes[currCell.boxNumber]).includes(i);
+                    const isInCol = saveCells(columns[currCell.colNumber]).includes(i);
                     if(!isInBox && !isInCol){
-                        currTile.writeToTile(i);
+                        currCell.writeToCell(i);
                         filled = true;
                         break;
                     }
 
-                    if(!availableTiles.length && !filled) continue attempt;
+                    if(!availableCells.length && !filled) continue attempt;
                 }
             }
-            saveState = saveTiles(tiles);
+            saveState = saveCells(cells);
             savedNumber = i + 1;
         }
     }
 }
 
-const seeSolverVal = (arr) => arr.map(tile => tile.solverValue);
-const isInRow = (rows, tile, num) => seeSolverVal(rows[tile.rowNumber]).includes(num);
-const isInCol = (columns, tile, num) => seeSolverVal(columns[tile.colNumber]).includes(num);
-const isInBox = (boxes, tile, num) => seeSolverVal(boxes[tile.boxNumber]).includes(num);
-const legal = (rows, columns, boxes, tile, num) => !isInRow(rows, tile, num) && !isInCol(columns, tile, num) && !isInBox(boxes, tile, num);
+const seeSolverVal = (arr) => arr.map(cell => cell.solverValue);
+const isInRow = (rows, cell, num) => seeSolverVal(rows[cell.rowNumber]).includes(num);
+const isInCol = (columns, cell, num) => seeSolverVal(columns[cell.colNumber]).includes(num);
+const isInBox = (boxes, cell, num) => seeSolverVal(boxes[cell.boxNumber]).includes(num);
+const legal = (rows, columns, boxes, cell, num) => !isInRow(rows, cell, num) && !isInCol(columns, cell, num) && !isInBox(boxes, cell, num);
 
-const resetSolver = (arr, save) => {
-    for(let i = 0; i < arr.length; i++){
-        arr[i].solverValue = save[i];
-    }
-}
-
-const getMoves = (rows, columns , boxes, tile) => {
+const getMoves = (rows, columns , boxes, cell) => {
     let moves = [];
     for (let i = 1; i <= 9; i++) {
-        if (legal(rows, columns, boxes, tile, i)) {
+        if (legal(rows, columns, boxes, cell, i)) {
             moves.push(i);
         }
     }
     return moves;
 }
 
-const bestBet = (emptyTiles, rows, columns, boxes) => {
-    let tileIndex;
+const bestBet = (emptyCells, rows, columns, boxes) => {
+    let cellIndex;
     let bestLength = 10;
-    for(let i = 0; i < emptyTiles.length; i++){
-        let moves = getMoves(rows, columns, boxes, emptyTiles[i]);
+    for(let i = 0; i < emptyCells.length; i++){
+        let moves = getMoves(rows, columns, boxes, emptyCells[i]);
         if(moves.length < bestLength){
             bestLength = moves.length;
-            tileIndex = i;
+            cellIndex = i;
         }
     }
-    return tileIndex;
+    return cellIndex;
 }
 
-const check = (tiles, rows, columns, boxes) => {
-    let emptyTiles = tiles.filter(tile => tile.solverValue === 0);
-    if(emptyTiles.length === 0){
-        return true;
+const unique = (cells, rows, columns, boxes) => {
+    let counter = 0;
+    const solve = (cells, rows, columns, boxes) => {
+        let emptyCells = cells.filter(cell => cell.solverValue === 0);
+        if(emptyCells.length === 0){
+            counter++;
+            //if(counter > 1) return true;
+            return false;
+        }
+        let bestCell = bestBet(emptyCells, rows, columns, boxes);
+        let moves = getMoves(rows, columns, boxes, emptyCells[bestCell]);
+        for(let m of moves){
+            emptyCells[bestCell].solverValue = m;
+            if(solve(cells, rows, columns, boxes) && counter < 2) return true;
+        }
+        emptyCells[bestCell].solverValue = 0;
+        return false;
     }
-    
-    let bestTile = emptyTiles[bestBet(emptyTiles, rows, columns, boxes)];
-    let moves = getMoves(rows, columns, boxes, bestTile);
-    for(let move of moves){
-        bestTile.solverValue = move;
-        if(check(tiles, rows, columns, boxes)){
-            return true;
-        }
-    };
-    bestTile.solverValue = 0;
-    return false;
+    solve(cells, rows, columns, boxes);
+    if(counter > 1) return false;
+    return true;
 }
 
-const valid = (tiles, rows, columns, boxes) => {
-    let saveState = seeSolverVal(tiles);
-    let count = 0;
-    while(true){
-        let emptyTiles = tiles.filter(tile => tile.solverValue === 0);
-        if(emptyTiles.length === 0){
-            count = 1;
-            break;
-        }
-        
-        let bestTile = emptyTiles[bestBet(emptyTiles, rows, columns, boxes)];
-        let moves = getMoves(rows, columns, boxes, bestTile);
-        if(moves.length === 1){
-            bestTile.solverValue = moves[0];
-        } else {
-            for(let move of moves){
-                bestTile.solverValue = move;
-                if(check(tiles, rows, columns, boxes)){
-                    count++;
-                    if(count > 1){
-                        break;
-                    }
-                }
-            };
-            break;
-        }
-    }
-    resetSolver(tiles, saveState);
-    return count === 1;
-}
-
-const createPuzzle = (tiles, numOfFilledTiles) => {
-    if(numOfFilledTiles < 17) throw new Error('a sudoku board with less than 17 filled tiles cannot have only one solution');
+const createPuzzle = (cells, numOfFilledCells) => {
+    if(numOfFilledCells < 17) throw new Error('a sudoku board with less than 17 filled cells cannot have only one solution');
 
     const full = [];
     let indexes = [];
@@ -224,38 +192,38 @@ const createPuzzle = (tiles, numOfFilledTiles) => {
         indexes.push(i);
     }
 
-    for(let i = 0; i < 81 - numOfFilledTiles; i++){
+    for(let i = 0; i < 81 - numOfFilledCells; i++){
         if(indexes.length === 0){
             indexes = full.slice();
             i = 0;
-            for(let tile of tiles){
-                tile.reveal();
-                tile.deletable = true;
+            for(let cell of cells){
+                cell.reveal();
+                cell.deletable = true;
             }
         }
         let rand = Math.floor(Math.random() * indexes.length);
-        let selectedTile = tiles[indexes[rand]];
-        if(!selectedTile.deletable){
+        let selectedCell = cells[indexes[rand]];
+        if(!selectedCell.deletable){
             i--;
         } else {
-            selectedTile.hide();
-            if(!valid(tiles, rows, columns, boxes)){
-                selectedTile.reveal();
-                selectedTile.deletable = false;
+            selectedCell.hide();
+            if(!unique(cells, rows, columns, boxes)){
+                selectedCell.reveal();
+                selectedCell.deletable = false;
                 i--;
             }
         }
         indexes.splice(rand, 1);
     }
 
-    tiles.filter(tile => tile.displayValue !== 0).forEach(tile => {
-        tile.asElement.value = tile.displayValue;
-        tile.asElement.setAttribute('disabled', '');
+    cells.filter(cell => cell.displayValue !== 0).forEach(cell => {
+        cell.asElement.value = cell.displayValue;
+        cell.asElement.setAttribute('disabled', '');
     });
 }
 
 let table = document.querySelector('table');
-let tileIdCounter = 0;
+let cellIdCounter = 0;
 for(let i = 0; i < 3; i++){
     let boxrow = document.createElement('tr');
     boxrow.setAttribute('class', 'box-row');
@@ -278,33 +246,33 @@ for(let i = 0; i < 9; i++){
     inboxrows.forEach(ibr => {
         if(ibr.getAttribute('name').includes(i)){
             for(let j = 0; j < 3; j++){
-                let tile = document.createElement('td');
+                let cell = document.createElement('td');
                 let input = document.createElement('input');
-                tile.setAttribute('id', `tile_${tileIdCounter}`);
-                tile.setAttribute('class', 'tile');
+                cell.setAttribute('id', `cell_${cellIdCounter}`);
+                cell.setAttribute('class', 'cell');
                 input.setAttribute('maxlength', '1');
                 input.setAttribute('oninput', 'this.value=this.value.replace(/[^1-9]/g,\'\');');
-                tile.appendChild(input);
-                ibr.appendChild(tile);
-                tileIdCounter++;
+                cell.appendChild(input);
+                ibr.appendChild(cell);
+                cellIdCounter++;
             }
         }
     });
 }
 
-let tiles = [];
+let cells = [];
 for(let i = 0; i < 81; i++){
-    tiles.push(new Tile(`tile_${i}`));
+    cells.push(new Cell(`cell_${i}`));
 }
-let tilesAsElements = tiles.map(tile => tile.asElement);
+let cellsAsElements = cells.map(cell => cell.asElement);
 
 let rows = [];
 let columns = [];
 let boxes = [];
 for(let i = 0; i < 9; i++){
-    rows.push(tiles.filter(tile => tile.rowNumber === i));
-    columns.push(tiles.filter(tile => tile.colNumber === i));
-    boxes.push(tiles.filter(tile => tile.boxNumber === i));
+    rows.push(cells.filter(cell => cell.rowNumber === i));
+    columns.push(cells.filter(cell => cell.colNumber === i));
+    boxes.push(cells.filter(cell => cell.boxNumber === i));
 }
 
 const winScreen = (numOfMistakes, timeElapsed) => {
@@ -367,22 +335,23 @@ let diffScreen = document.getElementById('difficulty_settings');
 let diffButtons = document.querySelectorAll('.diff');
 let confirmButton = document.querySelector('.confirm');
 let diff = 0;
+let permadiff = 0;
 diffButtons.forEach(button => {
     let ogClassName = button.className;
     button.addEventListener('focus', () => {
         button.className += ' clicked';
         switch(button.id){
             case 'easy':
-                diff = 50;
+                diff = 45;
                 break;
             case 'medium':
                 diff = 35;
                 break;
             case 'hard':
-                diff = 25;
+                diff = 30;
                 break;
             case 'very':
-                diff = 20;
+                diff = 24;
                 break;
         }
     });
@@ -395,27 +364,41 @@ diffButtons.forEach(button => {
     });
 });
 
+function stringGenerate(cells){
+    let string = '';
+    for(let cell of cells){
+        if(cell.displayValue === 0){
+            string += '.';
+        } else {
+            string += cell.displayValue;
+        }
+    }
+    return string;
+}
+
 confirmButton.addEventListener('click', () => {
     if(diff !== 0){
+        permadiff = diff;
         let startTime = Date.now();
         let newgameButton = document.getElementById('new_game');
         let mistakeCounter = 0;
-        generateBoard(tiles, rows, columns, boxes);
+        generateBoard(cells, rows, columns, boxes);
         confirmButton.textContent = 'LOADING...';
         setTimeout(() => {
-            createPuzzle(tiles, diff);
+            createPuzzle(cells, diff);
+            console.log(stringGenerate(cells));
             diffScreen.className = 'hidden';
             table.className = '';
             
-            tiles.forEach(tile => tile.asElement.addEventListener('focus', tile.clearInput()));
+            cells.forEach(cell => cell.asElement.addEventListener('focus', () => cell.clearInput()));
             document.addEventListener('keyup', e => {
                 if(e.code.includes('Enter')){
-                    tiles.filter(tile => !tile.asElement.hasAttribute('disabled') && tile.asElement.value !== '').forEach(tile => {
-                        let mistake = tile.checkInput();
+                    cells.filter(cell => !cell.asElement.hasAttribute('disabled') && cell.asElement.value !== '').forEach(cell => {
+                        let mistake = cell.checkInput();
                         mistakeCounter += mistake;
                     });
                 
-                    if(tiles.filter(tile => tile.asElement.hasAttribute('disabled')).length === 81){
+                    if(cells.filter(cell => cell.asElement.hasAttribute('disabled')).length === 81){
                         let endTime = Date.now();
                         let miliseconds = endTime - startTime;
                         let minutes = Math.floor(miliseconds/1000/60);
@@ -428,15 +411,15 @@ confirmButton.addEventListener('click', () => {
                         newgameButton.addEventListener('click', () => {
                             let screen = document.getElementById('win_screen');
                             screen.className = 'hidden';
-                            emptyBoard(tiles);
-                            generateBoard(tiles, rows, columns, boxes);
-                            createPuzzle(tiles, diff);
+                            emptyBoard(cells);
+                            generateBoard(cells, rows, columns, boxes);
+                            createPuzzle(cells, permadiff);
                             mistakeCounter = 0;
                             startTime = Date.now();
                         });
                     }
                 } else if(e.code.includes('Backspace' || 'Delete')){
-                    if(tilesAsElements.includes(document.activeElement)){
+                    if(cellsAsElements.includes(document.activeElement)){
                         document.activeElement.className = '';
                     }
                 }
