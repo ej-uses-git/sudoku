@@ -1,12 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>Sudoku: Rules</title>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Rules of Sudoku</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" id="favicon">
 </head>
 <body>
-    
+    <header>
+        <h1>THE RULES OF SUDOKU</h1>
+    </header>
+
+    <main class="text">
+        <img src="./dark_mode_img.png" id="grid-image"/>
+        <p>Every Sudoku puzzle involves a 9×9 grid of squares subdivided into 3×3 boxes. </p>
+        <p>In total there are 81 squares on a Sudoku grid and when the puzzle is completed each square will contain exactly one number.</p>
+        <ul>
+            <li>Every square has to contain a single number</li>
+            <li>Only the numbers from 1 through to 9 can be used</li>
+            <li>Each 3×3 box can only contain each number from 1 to 9 once</li>
+            <li>Each vertical column can only contain each number from 1 to 9 once</li>
+            <li>Each horizontal row can only contain each number from 1 to 9 once</li>
+        </ul>
+        <p>Once the puzzle is solved, this means that every row, column, and 3×3 box will contain every number from 1 to 9 exactly once. <br/>In other words, no number can be repeated in any 3×3 box, row, or column.</p>
+    </main>
+
+    <footer>
+        <p class="footnote">Website coded and designed by Evyatar Shafran</p>
+    </footer>
+    <script type="text/javascript">
+        console.log(localStorage.getItem('colormode'));
+        let root = document.querySelector(':root');
+        let favicon = document.getElementById('favicon');
+        let image = document.querySelector('img');
+        if(localStorage.getItem('colormode') === 'dark'){
+            root.style.setProperty('--main', 'black');
+            root.style.setProperty('--minor', 'white');
+            root.style.setProperty('--alt', '#dfdfdf');
+            favicon.setAttribute('href', './favicon.ico');
+            image.setAttribute('src', './dark_mode_img.png');
+        } else {
+            root.style.setProperty('--main', 'white');
+            root.style.setProperty('--minor', 'black');
+            root.style.setProperty('--alt', '#333');
+            favicon.setAttribute('href', './altfavicon.ico');
+            image.setAttribute('src', './light_mode_img.png');
+        }
+    </script>
 </body>
 </html>
