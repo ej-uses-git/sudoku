@@ -370,7 +370,7 @@ diffButtons.forEach(button => {
         button.className += ' clicked';
         switch(button.id){
             case 'easy':
-                diff = 45;
+                diff = 80;////
                 break;
             case 'medium':
                 diff = 35;
@@ -397,12 +397,14 @@ diffButtons.forEach(button => {
 //initializing
 let markerHolder = document.querySelector('.marker-holder');
 let markers = document.querySelectorAll('.marker');
+let resetter = document.querySelector('.reset');
 if(localStorage.getItem('currentPuzzle')){
     //using storage-saved puzzle
     fillFromString(cells, localStorage.getItem('currentPuzzle'));
     rememberSolution(cells, localStorage.getItem('currentSolution'));
     diffScreen.className = 'hidden';
     table.className = '';
+    resetter.className = 'reset btn';
     markerHolder.className = 'marker-holder';
     markerSetter(markers, rows, true);
 } else {
@@ -423,6 +425,7 @@ if(localStorage.getItem('currentPuzzle')){
                 localStorage.setItem('currentSolution', solutionString(cells));
                 diffScreen.className = 'hidden';
                 table.className = '';
+                resetter.className = 'reset btn';
                 markerHolder.className = 'marker-holder';
                 markerSetter(markers, rows, true);
             }, 100);
@@ -431,7 +434,6 @@ if(localStorage.getItem('currentPuzzle')){
 }
 
 //letting user reset to a new puzzle
-let resetter = document.querySelector('.reset');
 resetter.addEventListener('click', () => {
     localStorage.removeItem('permadiff');
     localStorage.removeItem('currentPuzzle');
@@ -440,6 +442,7 @@ resetter.addEventListener('click', () => {
     localStorage.removeItem('mistakeCounter');
     diffScreen.className = '';
     table.className = 'hidden';
+    resetter.className = 'reset btn';
     markerHolder.className += ' hidden';
     confirmButton.textContent = 'CONFIRM';
     confirmButton.addEventListener('click', () => {
@@ -479,7 +482,7 @@ document.addEventListener('keyup', e => {
         markerSetter(markers, rows);
         
         if(cells.filter(cell => cell.asElement.hasAttribute('disabled')).length === 81){
-            let newgameButton = document.getElementById('new_game');
+            let newpuzzButton = document.getElementById('new_puzzle');
             let endTime = Date.now();
             let miliseconds = endTime - Number(localStorage.getItem('startTime'));
             let minutes = Math.floor(miliseconds/1000/60);
@@ -488,20 +491,44 @@ document.addEventListener('keyup', e => {
             let seconds = Math.floor((miliseconds - minutes*1000*60)/1000);
             let secondsFirstDigit = Math.floor(seconds/10);
             let secondsSecondDigit = seconds - secondsFirstDigit*10;
+            diffScreen.className += ' hidden';
+            resetter.className += ' hidden';
             winScreen(localStorage.getItem('mistakeCounter'), `${minutesFirstDigit}${minutesSecondDigit}:${secondsFirstDigit}${secondsSecondDigit}`);
-            newgameButton.addEventListener('click', () => {
+            newpuzzButton.addEventListener('click', () => {
                 let screen = document.getElementById('win_screen');
                 screen.className = 'hidden';
-                markerHolder.className = 'marker-holder';
-                generateBoard(cells, rows, columns, boxes);
-                createPuzzle(cells, Number(localStorage.getItem('permadiff')));
-                localStorage.setItem('currentPuzzle', stringGenerate(cells));
-                localStorage.setItem('currentSolution', solutionString(cells));
-                console.log(officialSudokuString(cells));
-                startTime = Date.now();
-                localStorage.setItem('startTime', String(startTime));
-                mistakeCounter = 0;
-                localStorage.setItem('mistakeCounter', String(mistakeCounter));
+                localStorage.removeItem('permadiff');
+                localStorage.removeItem('currentPuzzle');
+                localStorage.removeItem('currentSolution');
+                localStorage.removeItem('startTime');
+                localStorage.removeItem('mistakeCounter');
+                diffScreen.className = '';
+                table.className = 'hidden';
+                markerHolder.className += ' hidden';
+                confirmButton.textContent = 'CONFIRM';
+                confirmButton.addEventListener('click', () => {
+                    if(diff !== 0){
+                        permadiff = diff;
+                        localStorage.setItem('permadiff', String(diff));
+                        let startTime = Date.now();
+                        localStorage.setItem('startTime', String(startTime));
+                        let mistakeCounter = 0;
+                        localStorage.setItem('mistakeCounter', String(mistakeCounter));
+                        generateBoard(cells, rows, columns, boxes);
+                        confirmButton.textContent = 'LOADING...';
+                        setTimeout(() => {
+                            createPuzzle(cells, diff);
+                            console.log(officialSudokuString(cells));
+                            localStorage.setItem('currentPuzzle', stringGenerate(cells));
+                            localStorage.setItem('currentSolution', solutionString(cells));
+                            diffScreen.className = 'hidden';
+                            table.className = '';
+                            resetter.className = 'reset btn'
+                            markerHolder.className = 'marker-holder';
+                            markerSetter(markers, rows, true);
+                        }, 100);
+                    }
+                });
             });
         }
         localStorage.setItem('currentPuzzle', stringGenerate(cells));
