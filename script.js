@@ -59,7 +59,7 @@ class Cell {
             if(Number(this._asElement.value) === this._storedValue){
                 this._asElement.setAttribute('disabled', '');
                 this._asElement.className = 'green';
-                this._displayValue = this._asElement.value;
+                this._displayValue = Number(this._asElement.value);
                 return 0;
             } else {
                 this._asElement.value = this._asElement.value;
@@ -200,6 +200,20 @@ const winScreen = (numOfMistakes, timeElapsed) => {
     mistakeStat.textContent = numOfMistakes;
     timeStat.textContent = timeElapsed;
     screen.className = '';
+}
+const markerSetter = (markers, rows, checker) => {
+    let rowsInputs = [];
+    for(let row of rows){
+        rowsInputs.push(row.map(cell => cell.displayValue));
+    }
+    for(let i = 1; i <= 9; i++){
+        if(checker){
+            markers[i - 1].className = 'marker';
+        }
+        if(rowsInputs.filter(row => row.includes(i)).length === 9 && !markers[i - 1].className.includes('hidden')){
+            markers[i - 1].className += ' hidden';
+        }
+    }
 }
 
 //initialization functions
@@ -379,12 +393,18 @@ diffButtons.forEach(button => {
         warning.textContent = '';
     });
 });
+
+//initializing
+let markerHolder = document.querySelector('.marker-holder');
+let markers = document.querySelectorAll('.marker');
 if(localStorage.getItem('currentPuzzle')){
     //using storage-saved puzzle
     fillFromString(cells, localStorage.getItem('currentPuzzle'));
     rememberSolution(cells, localStorage.getItem('currentSolution'));
     diffScreen.className = 'hidden';
     table.className = '';
+    markerHolder.className = 'marker-holder';
+    markerSetter(markers, rows, true);
 } else {
     confirmButton.addEventListener('click', () => {
         if(diff !== 0){
@@ -403,6 +423,8 @@ if(localStorage.getItem('currentPuzzle')){
                 localStorage.setItem('currentSolution', solutionString(cells));
                 diffScreen.className = 'hidden';
                 table.className = '';
+                markerHolder.className = 'marker-holder';
+                markerSetter(markers, rows, true);
             }, 100);
         }
     });
@@ -418,6 +440,7 @@ resetter.addEventListener('click', () => {
     localStorage.removeItem('mistakeCounter');
     diffScreen.className = '';
     table.className = 'hidden';
+    markerHolder.className += ' hidden';
     confirmButton.textContent = 'CONFIRM';
     confirmButton.addEventListener('click', () => {
         if(diff !== 0){
@@ -436,6 +459,8 @@ resetter.addEventListener('click', () => {
                 localStorage.setItem('currentSolution', solutionString(cells));
                 diffScreen.className = 'hidden';
                 table.className = '';
+                markerHolder.className = 'marker-holder';
+                markerSetter(markers, rows, true);
             }, 100);
         }
     });
@@ -450,6 +475,8 @@ document.addEventListener('keyup', e => {
             let mistakeCounter = Number(localStorage.getItem('mistakeCounter')) + mistake;
             localStorage.setItem('mistakeCounter', String(mistakeCounter));
         });
+
+        markerSetter(markers, rows);
         
         if(cells.filter(cell => cell.asElement.hasAttribute('disabled')).length === 81){
             let newgameButton = document.getElementById('new_game');
@@ -465,6 +492,7 @@ document.addEventListener('keyup', e => {
             newgameButton.addEventListener('click', () => {
                 let screen = document.getElementById('win_screen');
                 screen.className = 'hidden';
+                markerHolder.className = 'marker-holder';
                 generateBoard(cells, rows, columns, boxes);
                 createPuzzle(cells, Number(localStorage.getItem('permadiff')));
                 localStorage.setItem('currentPuzzle', stringGenerate(cells));
@@ -477,7 +505,7 @@ document.addEventListener('keyup', e => {
             });
         }
         localStorage.setItem('currentPuzzle', stringGenerate(cells));
-        console.log(localStorage.getItem('currentPuzzle'));
+        markerSetter(markers, rows, true);
     } else if(e.code.includes('Backspace' || 'Delete')){
         if(cellsAsElements.includes(document.activeElement)){
             document.activeElement.className = '';
