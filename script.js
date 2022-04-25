@@ -370,7 +370,7 @@ diffButtons.forEach(button => {
         button.className += ' clicked';
         switch(button.id){
             case 'easy':
-                diff = 80;////
+                diff = 45;
                 break;
             case 'medium':
                 diff = 35;
