@@ -338,11 +338,11 @@ input:disabled {
     font-weight: bold;
 }
 
-#new_game {
+#new_puzzle {
     width: 150px;
     height: 75px;
 
-    margin-bottom: 30px;
+    margin-bottom: 50px;
 
     border-radius: 5%;
     border: 2.5px solid var(--second);
@@ -353,7 +353,7 @@ input:disabled {
     background-color: var(--second);
 }
 
-#new_game:hover {
+#new_puzzle:hover {
     cursor: pointer;
 
     color: var(--second);
