@@ -203,6 +203,7 @@ const winScreen = (numOfMistakes, timeElapsed) => {
 }
 const markerSetter = (markers, rows, checker) => {
     let rowsInputs = [];
+    let unmarkedNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     for(let row of rows){
         rowsInputs.push(row.map(cell => cell.displayValue));
     }
@@ -212,6 +213,17 @@ const markerSetter = (markers, rows, checker) => {
         }
         if(rowsInputs.filter(row => row.includes(i)).length === 9 && !markers[i - 1].className.includes('hidden')){
             markers[i - 1].className += ' hidden';
+            unmarkedNumbers.splice(unmarkedNumbers.indexOf(i), 1);
+        }
+    }
+    let markedNumRegex = '[^';
+    for(let num of unmarkedNumbers){
+        markedNumRegex += num;
+    }
+    markedNumRegex += ']';
+    for(let row of rows){
+        for(let cell of row){
+            cell.asElement.setAttribute('oninput', `this.value=this.value.replace(/${markedNumRegex}/g,\'\');`);
         }
     }
 }
@@ -407,31 +419,31 @@ if(localStorage.getItem('currentPuzzle')){
     resetter.className = 'reset btn';
     markerHolder.className = 'marker-holder';
     markerSetter(markers, rows, true);
-} else {
-    confirmButton.addEventListener('click', () => {
-        if(diff !== 0){
-            permadiff = diff;
-            localStorage.setItem('permadiff', String(permadiff));
-            let startTime = Date.now();
-            localStorage.setItem('startTime', String(startTime));
-            let mistakeCounter = 0;
-            localStorage.setItem('mistakeCounter', String(mistakeCounter));
-            generateBoard(cells, rows, columns, boxes);
-            confirmButton.textContent = 'LOADING...';
-            setTimeout(() => {
-                createPuzzle(cells, diff);
-                console.log(officialSudokuString(cells));
-                localStorage.setItem('currentPuzzle', stringGenerate(cells));
-                localStorage.setItem('currentSolution', solutionString(cells));
-                diffScreen.className = 'hidden';
-                table.className = '';
-                resetter.className = 'reset btn';
-                markerHolder.className = 'marker-holder';
-                markerSetter(markers, rows, true);
-            }, 100);
-        }
-    });
 }
+
+confirmButton.addEventListener('click', () => {
+    if(diff !== 0){
+        permadiff = diff;
+        localStorage.setItem('permadiff', String(permadiff));
+        let startTime = Date.now();
+        localStorage.setItem('startTime', String(startTime));
+        let mistakeCounter = 0;
+        localStorage.setItem('mistakeCounter', String(mistakeCounter));
+        generateBoard(cells, rows, columns, boxes);
+        confirmButton.textContent = 'LOADING...';
+        setTimeout(() => {
+            createPuzzle(cells, diff);
+            console.log(officialSudokuString(cells));
+            localStorage.setItem('currentPuzzle', stringGenerate(cells));
+            localStorage.setItem('currentSolution', solutionString(cells));
+            diffScreen.className = 'hidden';
+            table.className = '';
+            resetter.className = 'reset btn';
+            markerHolder.className = 'marker-holder';
+            markerSetter(markers, rows, true);
+        }, 100);
+    }
+});
 
 //letting user reset to a new puzzle
 resetter.addEventListener('click', () => {
@@ -442,31 +454,9 @@ resetter.addEventListener('click', () => {
     localStorage.removeItem('mistakeCounter');
     diffScreen.className = '';
     table.className = 'hidden';
-    resetter.className = 'reset btn';
+    resetter.className += ' hidden';
     markerHolder.className += ' hidden';
     confirmButton.textContent = 'CONFIRM';
-    confirmButton.addEventListener('click', () => {
-        if(diff !== 0){
-            permadiff = diff;
-            localStorage.setItem('permadiff', String(diff));
-            let startTime = Date.now();
-            localStorage.setItem('startTime', String(startTime));
-            let mistakeCounter = 0;
-            localStorage.setItem('mistakeCounter', String(mistakeCounter));
-            generateBoard(cells, rows, columns, boxes);
-            confirmButton.textContent = 'LOADING...';
-            setTimeout(() => {
-                createPuzzle(cells, diff);
-                console.log(officialSudokuString(cells));
-                localStorage.setItem('currentPuzzle', stringGenerate(cells));
-                localStorage.setItem('currentSolution', solutionString(cells));
-                diffScreen.className = 'hidden';
-                table.className = '';
-                markerHolder.className = 'marker-holder';
-                markerSetter(markers, rows, true);
-            }, 100);
-        }
-    });
 });
 
 //setting event listeners
@@ -506,29 +496,6 @@ document.addEventListener('keyup', e => {
                 table.className = 'hidden';
                 markerHolder.className += ' hidden';
                 confirmButton.textContent = 'CONFIRM';
-                confirmButton.addEventListener('click', () => {
-                    if(diff !== 0){
-                        permadiff = diff;
-                        localStorage.setItem('permadiff', String(diff));
-                        let startTime = Date.now();
-                        localStorage.setItem('startTime', String(startTime));
-                        let mistakeCounter = 0;
-                        localStorage.setItem('mistakeCounter', String(mistakeCounter));
-                        generateBoard(cells, rows, columns, boxes);
-                        confirmButton.textContent = 'LOADING...';
-                        setTimeout(() => {
-                            createPuzzle(cells, diff);
-                            console.log(officialSudokuString(cells));
-                            localStorage.setItem('currentPuzzle', stringGenerate(cells));
-                            localStorage.setItem('currentSolution', solutionString(cells));
-                            diffScreen.className = 'hidden';
-                            table.className = '';
-                            resetter.className = 'reset btn'
-                            markerHolder.className = 'marker-holder';
-                            markerSetter(markers, rows, true);
-                        }, 100);
-                    }
-                });
             });
         }
         localStorage.setItem('currentPuzzle', stringGenerate(cells));
