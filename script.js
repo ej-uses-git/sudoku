@@ -463,8 +463,13 @@ resetter.addEventListener('click', () => {
 cells.forEach(cell => cell.asElement.addEventListener('focus', () => cell.clearInput()));
 document.addEventListener('keyup', e => {
     if(e.code.includes('Enter')){
+        let emptyCells = cells.filter(cell => cell.displayValue === 0);
+        let emptyCellsAsElements = emptyCells.map(cell => cell.asElement);
+        let nextCell = emptyCellsAsElements[emptyCellsAsElements.indexOf(document.activeElement) + 1];
+
         cells.filter(cell => !cell.asElement.hasAttribute('disabled') && cell.asElement.value !== '').forEach(cell => {
             let mistake = cell.checkInput();
+            if(mistake === 0) nextCell.focus();
             let mistakeCounter = Number(localStorage.getItem('mistakeCounter')) + mistake;
             localStorage.setItem('mistakeCounter', String(mistakeCounter));
         });
