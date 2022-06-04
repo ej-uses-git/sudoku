@@ -487,7 +487,7 @@ document.addEventListener('keyup', e => {
 
         cells.filter(cell => !cell.asElement.hasAttribute('disabled') && cell.asElement.value !== '').forEach(cell => {
             let mistake = cell.checkInput();
-            if(mistake === 0) nextCell.focus();
+            if(mistake === 0 && nextCell) nextCell.focus();
             let mistakeCounter = Number(localStorage.getItem('mistakeCounter')) + mistake;
             localStorage.setItem('mistakeCounter', String(mistakeCounter));
         });
