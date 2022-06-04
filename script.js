@@ -477,7 +477,6 @@ window.addEventListener('beforeunload', () => {
 });
 window.addEventListener('load', () => {
     loadTime = Date.now();
-    alert(localStorage.getItem('milisecondsCounted'));
 })
 cells.forEach(cell => cell.asElement.addEventListener('focus', () => cell.clearInput()));
 document.addEventListener('keyup', e => {
