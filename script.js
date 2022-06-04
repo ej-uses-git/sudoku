@@ -84,6 +84,7 @@ const officialSudokuString = (cells) => {
 }
 
 //general functions
+const findObjectFromElement = (elem, arr) => arr[elem.parentElement.id.slice(elem.parentElement.id.indexOf('_') + 1)];
 const saveCells = arr => arr.map(cell => cell.storedValue);
 const rewriteCells = (arr, save) => {
     for(let i = 0; i < save.length; i++){
@@ -462,9 +463,9 @@ resetter.addEventListener('click', () => {
 //setting event listeners
 cells.forEach(cell => cell.asElement.addEventListener('focus', () => cell.clearInput()));
 document.addEventListener('keyup', e => {
+    let emptyCells = cells.filter(cell => cell.displayValue === 0);
+    let emptyCellsAsElements = emptyCells.map(cell => cell.asElement);
     if(e.code.includes('Enter')){
-        let emptyCells = cells.filter(cell => cell.displayValue === 0);
-        let emptyCellsAsElements = emptyCells.map(cell => cell.asElement);
         let nextCell = emptyCellsAsElements[emptyCellsAsElements.indexOf(document.activeElement) + 1];
 
         cells.filter(cell => !cell.asElement.hasAttribute('disabled') && cell.asElement.value !== '').forEach(cell => {
@@ -508,6 +509,35 @@ document.addEventListener('keyup', e => {
     } else if(e.code.includes('Backspace' || 'Delete')){
         if(cellsAsElements.includes(document.activeElement)){
             document.activeElement.className = '';
+        }
+    } else if(e.code.includes('Arrow')){
+        let proceed = true;
+        if(!cellsAsElements.includes(document.activeElement)){
+            emptyCellsAsElements[0].focus();
+            proceed = false;
+        }
+        let currentCell = document.activeElement;
+        let currentCellAsObject = findObjectFromElement(currentCell, cells);
+        let currentColumn = columns[currentCellAsObject.colNumber].filter(cell => cell.displayValue === 0);;
+        let currentRow = rows[currentCellAsObject.rowNumber].filter(cell => cell.displayValue === 0);;
+        if(proceed){
+            if(e.code.includes('Up')){
+                if(currentColumn[currentColumn.indexOf(currentCellAsObject) - 1]){
+                    currentColumn[currentColumn.indexOf(currentCellAsObject) - 1].asElement.focus();
+                }
+            } else if(e.code.includes('Right')){
+                if(currentRow[currentRow.indexOf(currentCellAsObject) + 1]){
+                    currentRow[currentRow.indexOf(currentCellAsObject) + 1].asElement.focus();
+                }
+            } else if(e.code.includes('Down')){
+                if(currentColumn[currentColumn.indexOf(currentCellAsObject) + 1]){
+                    currentColumn[currentColumn.indexOf(currentCellAsObject) + 1].asElement.focus();
+                }
+            } else if(e.code.includes('Left')){
+                if(currentRow[currentRow.indexOf(currentCellAsObject) - 1]){
+                    currentRow[currentRow.indexOf(currentCellAsObject) - 1].asElement.focus();
+                }
+            }
         }
     }
 });
