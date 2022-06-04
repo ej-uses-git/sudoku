@@ -411,7 +411,8 @@ diffButtons.forEach(button => {
 let markerHolder = document.querySelector('.marker-holder');
 let markers = document.querySelectorAll('.marker');
 let resetter = document.querySelector('.reset');
-if(localStorage.getItem('currentPuzzle')){
+if(localStorage.hasOwnProperty('currentPuzzle') && localStorage.hasOwnProperty('currentSolution')){
+    alert(localStorage.getItem('currentPuzzle'));
     //using storage-saved puzzle
     fillFromString(cells, localStorage.getItem('currentPuzzle'));
     rememberSolution(cells, localStorage.getItem('currentSolution'));
@@ -511,6 +512,8 @@ document.addEventListener('keyup', e => {
             let secondsSecondDigit = seconds - secondsFirstDigit*10;
             diffScreen.className += ' hidden';
             resetter.className += ' hidden';
+            localStorage.removeItem('currentPuzzle');
+            localStorage.removeItem('currentSolution');
             winScreen(localStorage.getItem('mistakeCounter'), `${minutesFirstDigit}${minutesSecondDigit}:${secondsFirstDigit}${secondsSecondDigit}`);
             newpuzzButton.addEventListener('click', () => {
                 let screen = document.getElementById('win_screen');
