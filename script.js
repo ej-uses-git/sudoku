@@ -383,7 +383,7 @@ diffButtons.forEach(button => {
         button.className += ' clicked';
         switch(button.id){
             case 'easy':
-                diff = 45;
+                diff = 80;////
                 break;
             case 'medium':
                 diff = 35;
@@ -453,6 +453,7 @@ resetter.addEventListener('click', () => {
     localStorage.removeItem('currentSolution');
     localStorage.removeItem('startTime');
     localStorage.removeItem('mistakeCounter');
+    localStorage.removeItem('milisecondsCounted');
     diffScreen.className = '';
     table.className = 'hidden';
     resetter.className += ' hidden';
@@ -461,6 +462,23 @@ resetter.addEventListener('click', () => {
 });
 
 //setting event listeners
+let loadTime;
+window.addEventListener('beforeunload', () => {
+    let closeTime = Date.now();
+    let milisecondsCounted;
+    if(localStorage.hasOwnProperty('milisecondsCounted')){
+        milisecondsCounted = Number(localStorage.getItem('milisecondsCounted'));
+        milisecondsCounted += closeTime - loadTime;
+        localStorage.setItem('milisecondsCounted', String(milisecondsCounted));
+    } else if (localStorage.hasOwnProperty('startTime')){
+        milisecondsCounted = closeTime - Number(localStorage.getItem('startTime'));
+        localStorage.setItem('milisecondsCounted', String(milisecondsCounted));
+    }
+});
+window.addEventListener('load', () => {
+    loadTime = Date.now();
+    alert(localStorage.getItem('milisecondsCounted'));
+})
 cells.forEach(cell => cell.asElement.addEventListener('focus', () => cell.clearInput()));
 document.addEventListener('keyup', e => {
     let emptyCells = cells.filter(cell => cell.displayValue === 0);
@@ -480,7 +498,12 @@ document.addEventListener('keyup', e => {
         if(cells.filter(cell => cell.asElement.hasAttribute('disabled')).length === 81){
             let newpuzzButton = document.getElementById('new_puzzle');
             let endTime = Date.now();
-            let miliseconds = endTime - Number(localStorage.getItem('startTime'));
+            let miliseconds;
+            let milisecondsCounted = Number(localStorage.getItem('milisecondsCounted')) || 0;
+            if(milisecondsCounted) 
+                miliseconds = milisecondsCounted + (endTime - loadTime);
+            else
+                miliseconds = endTime - Number(localStorage.getItem('startTime'));
             let minutes = Math.floor(miliseconds/1000/60);
             let minutesFirstDigit = Math.floor(minutes/10);
             let minutesSecondDigit = minutes - minutesFirstDigit*10;
@@ -498,6 +521,7 @@ document.addEventListener('keyup', e => {
                 localStorage.removeItem('currentSolution');
                 localStorage.removeItem('startTime');
                 localStorage.removeItem('mistakeCounter');
+                localStorage.removeItem('milisecondsCounted');
                 diffScreen.className = '';
                 table.className = 'hidden';
                 markerHolder.className += ' hidden';
