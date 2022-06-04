@@ -383,7 +383,7 @@ diffButtons.forEach(button => {
         button.className += ' clicked';
         switch(button.id){
             case 'easy':
-                diff = 80;////
+                diff = 45;
                 break;
             case 'medium':
                 diff = 35;
@@ -411,7 +411,8 @@ diffButtons.forEach(button => {
 let markerHolder = document.querySelector('.marker-holder');
 let markers = document.querySelectorAll('.marker');
 let resetter = document.querySelector('.reset');
-if(localStorage.getItem('currentPuzzle')){
+let winScreenActive = false;
+if(localStorage.hasOwnProperty('currentPuzzle') && localStorage.hasOwnProperty('currentSolution')){
     //using storage-saved puzzle
     fillFromString(cells, localStorage.getItem('currentPuzzle'));
     rememberSolution(cells, localStorage.getItem('currentSolution'));
@@ -420,6 +421,26 @@ if(localStorage.getItem('currentPuzzle')){
     resetter.className = 'reset btn';
     markerHolder.className = 'marker-holder';
     markerSetter(markers, rows, true);
+} else if(localStorage.hasOwnProperty('puzzlesolved')){
+    diffScreen.className = 'hidden';
+    winScreen(localStorage.getItem('mistakeCounter'), localStorage.getItem('puzzlesolved'));
+    let newpuzzButton = document.getElementById('new_puzzle');
+    newpuzzButton.addEventListener('click', () => {
+        let screen = document.getElementById('win_screen');
+        screen.className = 'hidden';
+        winScreenActive = false;
+        localStorage.removeItem('permadiff');
+        localStorage.removeItem('currentPuzzle');
+        localStorage.removeItem('currentSolution');
+        localStorage.removeItem('startTime');
+        localStorage.removeItem('mistakeCounter');
+        localStorage.removeItem('milisecondsCounted');
+        localStorage.removeItem('puzzlesolved');
+        diffScreen.className = '';
+        table.className = 'hidden';
+        markerHolder.className += ' hidden';
+        confirmButton.textContent = 'CONFIRM';
+    });
 }
 
 confirmButton.addEventListener('click', () => {
@@ -454,6 +475,7 @@ resetter.addEventListener('click', () => {
     localStorage.removeItem('startTime');
     localStorage.removeItem('mistakeCounter');
     localStorage.removeItem('milisecondsCounted');
+    localStorage.removeItem('puzzlesolved');
     diffScreen.className = '';
     table.className = 'hidden';
     resetter.className += ' hidden';
@@ -480,85 +502,94 @@ window.addEventListener('load', () => {
 })
 cells.forEach(cell => cell.asElement.addEventListener('focus', () => cell.clearInput()));
 document.addEventListener('keyup', e => {
-    let emptyCells = cells.filter(cell => cell.displayValue === 0);
-    let emptyCellsAsElements = emptyCells.map(cell => cell.asElement);
-    if(e.code.includes('Enter')){
-        let nextCell = emptyCellsAsElements[emptyCellsAsElements.indexOf(document.activeElement) + 1];
-
-        cells.filter(cell => !cell.asElement.hasAttribute('disabled') && cell.asElement.value !== '').forEach(cell => {
-            let mistake = cell.checkInput();
-            if(mistake === 0 && nextCell) nextCell.focus();
-            let mistakeCounter = Number(localStorage.getItem('mistakeCounter')) + mistake;
-            localStorage.setItem('mistakeCounter', String(mistakeCounter));
-        });
-
-        markerSetter(markers, rows);
-        
-        if(cells.filter(cell => cell.asElement.hasAttribute('disabled')).length === 81){
-            let newpuzzButton = document.getElementById('new_puzzle');
-            let endTime = Date.now();
-            let miliseconds;
-            let milisecondsCounted = Number(localStorage.getItem('milisecondsCounted')) || 0;
-            if(milisecondsCounted) 
+    if(!winScreenActive){
+        let emptyCells = cells.filter(cell => cell.displayValue === 0);
+        let emptyCellsAsElements = emptyCells.map(cell => cell.asElement);
+        if(e.code.includes('Enter')){
+            let nextCell = emptyCellsAsElements[emptyCellsAsElements.indexOf(document.activeElement) + 1];
+            
+            cells.filter(cell => !cell.asElement.hasAttribute('disabled') && cell.asElement.value !== '').forEach(cell => {
+                let mistake = cell.checkInput();
+                if(mistake === 0 && nextCell) nextCell.focus();
+                let mistakeCounter = Number(localStorage.getItem('mistakeCounter')) + mistake;
+                localStorage.setItem('mistakeCounter', String(mistakeCounter));
+            });
+            
+            markerSetter(markers, rows);
+            
+            if(cells.filter(cell => cell.asElement.hasAttribute('disabled')).length === 81){
+                let newpuzzButton = document.getElementById('new_puzzle');
+                let endTime = Date.now();
+                let miliseconds;
+                let milisecondsCounted = Number(localStorage.getItem('milisecondsCounted')) || 0;
+                if(milisecondsCounted) 
                 miliseconds = milisecondsCounted + (endTime - loadTime);
-            else
+                else
                 miliseconds = endTime - Number(localStorage.getItem('startTime'));
-            let minutes = Math.floor(miliseconds/1000/60);
-            let minutesFirstDigit = Math.floor(minutes/10);
-            let minutesSecondDigit = minutes - minutesFirstDigit*10;
-            let seconds = Math.floor((miliseconds - minutes*1000*60)/1000);
-            let secondsFirstDigit = Math.floor(seconds/10);
-            let secondsSecondDigit = seconds - secondsFirstDigit*10;
-            diffScreen.className += ' hidden';
-            resetter.className += ' hidden';
-            winScreen(localStorage.getItem('mistakeCounter'), `${minutesFirstDigit}${minutesSecondDigit}:${secondsFirstDigit}${secondsSecondDigit}`);
-            newpuzzButton.addEventListener('click', () => {
-                let screen = document.getElementById('win_screen');
-                screen.className = 'hidden';
-                localStorage.removeItem('permadiff');
+                let minutes = Math.floor(miliseconds/1000/60);
+                let minutesFirstDigit = Math.floor(minutes/10);
+                let minutesSecondDigit = minutes - minutesFirstDigit*10;
+                let seconds = Math.floor((miliseconds - minutes*1000*60)/1000);
+                let secondsFirstDigit = Math.floor(seconds/10);
+                let secondsSecondDigit = seconds - secondsFirstDigit*10;
+                diffScreen.className += ' hidden';
+                resetter.className += ' hidden';
                 localStorage.removeItem('currentPuzzle');
                 localStorage.removeItem('currentSolution');
-                localStorage.removeItem('startTime');
-                localStorage.removeItem('mistakeCounter');
                 localStorage.removeItem('milisecondsCounted');
-                diffScreen.className = '';
-                table.className = 'hidden';
-                markerHolder.className += ' hidden';
-                confirmButton.textContent = 'CONFIRM';
-            });
-        }
-        localStorage.setItem('currentPuzzle', stringGenerate(cells));
-        markerSetter(markers, rows, true);
-    } else if(e.code.includes('Backspace' || 'Delete')){
-        if(cellsAsElements.includes(document.activeElement)){
-            document.activeElement.className = '';
-        }
-    } else if(e.code.includes('Arrow')){
-        let proceed = true;
-        if(!cellsAsElements.includes(document.activeElement)){
-            emptyCellsAsElements[0].focus();
-            proceed = false;
-        }
-        let currentCell = document.activeElement;
-        let currentCellAsObject = findObjectFromElement(currentCell, cells);
-        let currentColumn = columns[currentCellAsObject.colNumber].filter(cell => cell.displayValue === 0);;
-        let currentRow = rows[currentCellAsObject.rowNumber].filter(cell => cell.displayValue === 0);;
-        if(proceed){
-            if(e.code.includes('Up')){
-                if(currentColumn[currentColumn.indexOf(currentCellAsObject) - 1]){
-                    currentColumn[currentColumn.indexOf(currentCellAsObject) - 1].asElement.focus();
-                }
-            } else if(e.code.includes('Right')){
-                if(currentRow[currentRow.indexOf(currentCellAsObject) + 1]){
-                    currentRow[currentRow.indexOf(currentCellAsObject) + 1].asElement.focus();
-                }
-            } else if(e.code.includes('Down')){
-                if(currentColumn[currentColumn.indexOf(currentCellAsObject) + 1]){
-                    currentColumn[currentColumn.indexOf(currentCellAsObject) + 1].asElement.focus();
-                }
-            } else if(e.code.includes('Left')){
-                if(currentRow[currentRow.indexOf(currentCellAsObject) - 1]){
-                    currentRow[currentRow.indexOf(currentCellAsObject) - 1].asElement.focus();
+                winScreen(localStorage.getItem('mistakeCounter'), `${minutesFirstDigit}${minutesSecondDigit}:${secondsFirstDigit}${secondsSecondDigit}`);
+                winScreenActive = true;
+                localStorage.setItem('puzzlesolved', `${minutesFirstDigit}${minutesSecondDigit}:${secondsFirstDigit}${secondsSecondDigit}`);
+                newpuzzButton.addEventListener('click', () => {
+                    let screen = document.getElementById('win_screen');
+                    screen.className = 'hidden';
+                    winScreenActive = false;
+                    localStorage.removeItem('permadiff');
+                    localStorage.removeItem('currentPuzzle');
+                    localStorage.removeItem('currentSolution');
+                    localStorage.removeItem('startTime');
+                    localStorage.removeItem('mistakeCounter');
+                    localStorage.removeItem('milisecondsCounted');
+                    localStorage.removeItem('puzzlesolved');
+                    diffScreen.className = '';
+                    table.className = 'hidden';
+                    markerHolder.className += ' hidden';
+                    confirmButton.textContent = 'CONFIRM';
+                });
+            }
+            localStorage.setItem('currentPuzzle', stringGenerate(cells));
+            markerSetter(markers, rows, true);
+        } else if(e.code.includes('Backspace' || 'Delete')){
+            if(cellsAsElements.includes(document.activeElement)){
+                document.activeElement.className = '';
+            }
+        } else if(e.code.includes('Arrow')){
+            let proceed = true;
+            if(!cellsAsElements.includes(document.activeElement)){
+                emptyCellsAsElements[0].focus();
+                proceed = false;
+            }
+            let currentCell = document.activeElement;
+            let currentCellAsObject = findObjectFromElement(currentCell, cells);
+            let currentColumn = columns[currentCellAsObject.colNumber].filter(cell => cell.displayValue === 0);;
+            let currentRow = rows[currentCellAsObject.rowNumber].filter(cell => cell.displayValue === 0);;
+            if(proceed){
+                if(e.code.includes('Up')){
+                    if(currentColumn[currentColumn.indexOf(currentCellAsObject) - 1]){
+                        currentColumn[currentColumn.indexOf(currentCellAsObject) - 1].asElement.focus();
+                    }
+                } else if(e.code.includes('Right')){
+                    if(currentRow[currentRow.indexOf(currentCellAsObject) + 1]){
+                        currentRow[currentRow.indexOf(currentCellAsObject) + 1].asElement.focus();
+                    }
+                } else if(e.code.includes('Down')){
+                    if(currentColumn[currentColumn.indexOf(currentCellAsObject) + 1]){
+                        currentColumn[currentColumn.indexOf(currentCellAsObject) + 1].asElement.focus();
+                    }
+                } else if(e.code.includes('Left')){
+                    if(currentRow[currentRow.indexOf(currentCellAsObject) - 1]){
+                        currentRow[currentRow.indexOf(currentCellAsObject) - 1].asElement.focus();
+                    }
                 }
             }
         }
