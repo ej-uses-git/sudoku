@@ -411,7 +411,6 @@ diffButtons.forEach(button => {
 let markerHolder = document.querySelector('.marker-holder');
 let markers = document.querySelectorAll('.marker');
 let resetter = document.querySelector('.reset');
-let winScreenActive = false;
 if(localStorage.hasOwnProperty('currentPuzzle') && localStorage.hasOwnProperty('currentSolution')){
     //using storage-saved puzzle
     fillFromString(cells, localStorage.getItem('currentPuzzle'));
@@ -463,6 +462,7 @@ confirmButton.addEventListener('click', () => {
             resetter.className = 'reset btn';
             markerHolder.className = 'marker-holder';
             markerSetter(markers, rows, true);
+            winScreenActive = false;
         }, 100);
     }
 });
@@ -543,7 +543,6 @@ document.addEventListener('keyup', e => {
                 newpuzzButton.addEventListener('click', () => {
                     let screen = document.getElementById('win_screen');
                     screen.className = 'hidden';
-                    winScreenActive = false;
                     localStorage.removeItem('permadiff');
                     localStorage.removeItem('currentPuzzle');
                     localStorage.removeItem('currentSolution');
