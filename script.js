@@ -426,6 +426,7 @@ if(localStorage.hasOwnProperty('currentPuzzle') && localStorage.hasOwnProperty('
     markerHolder.className = 'marker-holder';
     markerSetter(markers, rows, true);
 } else if(localStorage.hasOwnProperty('puzzlesolved')){
+    winScreenActive = true;
     diffScreen.className = 'hidden';
     winScreen(localStorage.getItem('mistakeCounter'), localStorage.getItem('puzzlesolved'));
     let newpuzzButton = document.getElementById('new_puzzle');
@@ -440,6 +441,7 @@ if(localStorage.hasOwnProperty('currentPuzzle') && localStorage.hasOwnProperty('
         localStorage.removeItem('mistakeCounter');
         localStorage.removeItem('milisecondsCounted');
         localStorage.removeItem('puzzlesolved');
+        localStorage.removeItem('officialString');
         diffScreen.className = '';
         table.className = 'hidden';
         markerHolder.className += ' hidden';
@@ -459,7 +461,7 @@ confirmButton.addEventListener('click', () => {
         confirmButton.textContent = 'LOADING...';
         setTimeout(() => {
             createPuzzle(cells, diff);
-            console.log(officialSudokuString(cells));
+            localStorage.setItem('officialString', officialSudokuString(cells));
             localStorage.setItem('currentPuzzle', stringGenerate(cells));
             localStorage.setItem('currentSolution', solutionString(cells));
             diffScreen.className = 'hidden';
@@ -481,6 +483,7 @@ resetter.addEventListener('click', () => {
     localStorage.removeItem('mistakeCounter');
     localStorage.removeItem('milisecondsCounted');
     localStorage.removeItem('puzzlesolved');
+    localStorage.removeItem('officialString');
     diffScreen.className = '';
     table.className = 'hidden';
     resetter.className += ' hidden';
@@ -555,6 +558,7 @@ document.addEventListener('keyup', e => {
                     localStorage.removeItem('mistakeCounter');
                     localStorage.removeItem('milisecondsCounted');
                     localStorage.removeItem('puzzlesolved');
+                    localStorage.removeItem('officialString');
                     diffScreen.className = '';
                     table.className = 'hidden';
                     markerHolder.className += ' hidden';
@@ -600,6 +604,55 @@ document.addEventListener('keyup', e => {
     }
 });
 
+let shareScreenActive = false;
+let shareButton = document.getElementById('share');
+let shareScreen = document.getElementById('share_screen');
+let statsDisplay = document.getElementById('stats_display');
+let stringDisplay = document.getElementById('string_display');
+let copyStats = document.getElementById('copy_button_1');
+let copyString = document.getElementById('copy_button_2');
+let newFromShare = document.getElementById('new_from_share');
+shareButton.addEventListener('click', () => {
+    if(winScreenActive){
+        statsDisplay.textContent = `Mistakes: ${localStorage.getItem('mistakeCounter')} // Time Elapsed: ${localStorage.getItem('puzzlesolved')}`;
+        stringDisplay.textContent = `${localStorage.getItem('officialString')}`;
+        let screen = document.getElementById('win_screen');
+        screen.className = 'hidden';
+        table.className = 'hidden';
+        markerHolder.className += ' hidden';
+        shareScreen.className = '';
+        shareScreenActive = true;
+        copyStats.addEventListener('click', () => {
+            navigator.clipboard.writeText(`Mistakes: ${localStorage.getItem('mistakeCounter')} // Time Elapsed: ${localStorage.getItem('puzzlesolved')}`);
+            setTimeout(() => {
+                alert('Copied your stats to the clipboard!');
+            }, 400);
+        });
+        copyString.addEventListener('click', () => {
+            navigator.clipboard.writeText(`${localStorage.getItem('officialString')}`);
+            setTimeout(() => {
+                alert('Copied the empty puzzle to the clipboard (as an official sudoku string)!');
+            }, 400);
+        });
+        newFromShare.addEventListener('click', () => {
+            shareScreen.className = 'hidden';
+            shareScreenActive = false;
+            localStorage.removeItem('permadiff');
+            localStorage.removeItem('currentPuzzle');
+            localStorage.removeItem('currentSolution');
+            localStorage.removeItem('startTime');
+            localStorage.removeItem('mistakeCounter');
+            localStorage.removeItem('milisecondsCounted');
+            localStorage.removeItem('puzzlesolved');
+            localStorage.removeItem('officialString');
+            diffScreen.className = '';
+            table.className = 'hidden';
+            markerHolder.className += ' hidden';
+            confirmButton.textContent = 'CONFIRM';
+        });
+    }
+});
+
 //setting colormode button
 let modeButton = document.querySelector('.mode-selector');
 if(localStorage.getItem('colormode') === 'dark'){
@@ -614,6 +667,7 @@ modeButton.addEventListener('click', () => {
         root.style.setProperty('--main', 'black');
         root.style.setProperty('--second', 'white');
         root.style.setProperty('--alt', '#dfdfdf');
+        root.style.setProperty('--greener', '#005000');
         favicon.setAttribute('href', './dark_favicon.ico');
         modeButton.textContent = 'Light Mode'
     } else if(localStorage.getItem('colormode') === 'dark'){
@@ -622,6 +676,7 @@ modeButton.addEventListener('click', () => {
         root.style.setProperty('--main', 'white');
         root.style.setProperty('--second', 'black');
         root.style.setProperty('--alt', '#333');
+        root.style.setProperty('--greener', '#009a00');
         favicon.setAttribute('href', './light_favicon.ico');
         modeButton.textContent = 'Dark Mode';
     }

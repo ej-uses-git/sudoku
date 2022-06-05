@@ -3,6 +3,7 @@
     --main: white;
     --second: black;
     --alt: #333;
+    --greener: #009a00;
 }
 
 /*general styles*/
@@ -116,7 +117,7 @@ a:hover {
     text-align: center;
 
     border-radius: 2%;
-    border: 1px solid var(--second);
+    border: 2px solid var(--second);
 
     color: var(--second);
     background-color: var(--main);
@@ -279,9 +280,9 @@ input:disabled {
 
 #stats {
     width: 90%;
-    margin-top: 75px;
+    margin-top: 45px;
     margin-right: auto;
-    margin-bottom: 55px;
+    margin-bottom: 50px;
     margin-left: auto;
 
     border: 1.5px solid var(--second);
@@ -338,11 +339,15 @@ input:disabled {
     font-weight: bold;
 }
 
-#new_puzzle {
+.winscreen-btn {
+    position: relative;
+    display: inline-blockblock;
     width: 150px;
     height: 75px;
 
     margin-bottom: 50px;
+    margin-left: 10px;
+    margin-right: 10px;
 
     border-radius: 5%;
     border: 2.5px solid var(--second);
@@ -353,9 +358,69 @@ input:disabled {
     background-color: var(--second);
 }
 
-#new_puzzle:hover {
+.winscreen-btn:hover {
     cursor: pointer;
 
     color: var(--second);
     background-color: var(--main);
+}
+
+#share {
+    background-color: green;
+}
+
+#share:hover {
+    background-color: var(--greener);
+    color: var(--main);
+}
+
+/* share screen */
+#share_screen {
+    position: absolute;
+    display: block;
+
+    z-index: 10;
+    
+    width: 410px;
+    height: 380px;
+
+    left: 0;
+    right: 0;
+    margin-top: 100px;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+
+    border: 2px solid var(--second);
+    border-radius: 2%;
+
+    color: var(--alt);
+    background-color: var(--main);
+}
+
+.share-block {
+    margin-top: 25px;
+    height: 100px
+}
+
+#new_from_share {
+    margin-top: 30px;
+}
+
+.copy:hover {
+    background-color: var(--greener);
+    color: var(--alt);
+}
+
+#stats_display {
+    font-size: 16px;
+}
+
+#string_display {
+    font-size: 14px;
+    height: 30px;
+    overflow-wrap: break-word;
+    margin-top: 10px;
+    margin-right: 40px;
+    margin-left: 40px
 }
