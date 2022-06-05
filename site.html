@@ -15,6 +15,7 @@
           root.style.setProperty('--main', 'black');
           root.style.setProperty('--second', 'white');
           root.style.setProperty('--alt', '#dfdfdf');
+          root.style.setProperty('--greener', '#005000');
           favicon.setAttribute('href', './dark_favicon.ico');
       } else {
           //default: light mode
@@ -22,11 +23,23 @@
           root.style.setProperty('--main', 'white');
           root.style.setProperty('--second', 'black');
           root.style.setProperty('--alt', '#333');
+          root.style.setProperty('--greener', '#009a00');
           favicon.setAttribute('href', './light_favicon.ico');
       }
     </script>
 </head>
 <body>
+    <div id="share_screen" class="hidden">
+      <div id="share_stats" class="share-block">
+        <h2 class="heading">Share your statistics: <p id="stats_display" disabled></p></h2>
+        <button id="copy_button_1" class="copy btn">Copy to clipboard</button>
+      </div>
+      <div id="share_string" class="share-block">
+        <h2 class="heading">Share the puzzle code: <div id="string_display" disabled></div></h2>
+        <button id="copy_button_2" class="copy btn">Copy to clipboard</button>
+      </div>
+      <button id="new_from_share" class="winscreen-btn">New Puzzle</button>
+    </div>
     <div id="win_screen" class="hidden">
         <h2 class="heading">CONGRATULATIONS!</h1>
         <h3 class="subheading">You solved the puzzle.</h3>
@@ -45,7 +58,8 @@
             </div>
           </div>
         </div>
-        <button id="new_puzzle">New Puzzle</button>
+        <button id="new_puzzle" class="winscreen-btn">New Puzzle</button>
+        <button id="share" class="winscreen-btn">Share</button>
     </div>
     <div id="difficulty_settings">
       <h2 class="heading">SELECT DIFFICULTY:</h2>
