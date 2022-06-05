@@ -379,6 +379,10 @@ let diff = 0;
 let permadiff = 0;
 diffButtons.forEach(button => {
     let ogClassName = button.className;
+    //in safari and firefox, buttons do not automatically focus when clicked, thus:
+    button.addEventListener('click', () => {
+        button.focus();
+    });
     button.addEventListener('focus', () => {
         button.className += ' clicked';
         switch(button.id){
