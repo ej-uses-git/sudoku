@@ -408,6 +408,7 @@ diffButtons.forEach(button => {
 });
 
 //initializing
+let winScreenActive = false;
 let markerHolder = document.querySelector('.marker-holder');
 let markers = document.querySelectorAll('.marker');
 let resetter = document.querySelector('.reset');
