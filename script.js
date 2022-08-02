@@ -229,6 +229,21 @@ const markerSetter = (markers, rows, checker) => {
     }
 }
 
+const clearStorage = () => {
+    localStorage.removeItem('permadiff');
+    localStorage.removeItem('currentPuzzle');
+    localStorage.removeItem('currentSolution');
+    localStorage.removeItem('startTime');
+    localStorage.removeItem('mistakeCounter');
+    localStorage.removeItem('milisecondsCounted');
+    localStorage.removeItem('puzzlesolved');
+    localStorage.removeItem('officialString');
+    diffScreen.className = '';
+    table.className = 'hidden';
+    markerHolder.className += ' hidden';
+    confirmButton.textContent = 'CONFIRM';
+}
+
 //initialization functions
 const generateBoard = (cells, rows, columns, boxes) => {
     emptyBoard(cells);
@@ -434,18 +449,7 @@ if(localStorage.hasOwnProperty('currentPuzzle') && localStorage.hasOwnProperty('
         let screen = document.getElementById('win_screen');
         screen.className = 'hidden';
         winScreenActive = false;
-        localStorage.removeItem('permadiff');
-        localStorage.removeItem('currentPuzzle');
-        localStorage.removeItem('currentSolution');
-        localStorage.removeItem('startTime');
-        localStorage.removeItem('mistakeCounter');
-        localStorage.removeItem('milisecondsCounted');
-        localStorage.removeItem('puzzlesolved');
-        localStorage.removeItem('officialString');
-        diffScreen.className = '';
-        table.className = 'hidden';
-        markerHolder.className += ' hidden';
-        confirmButton.textContent = 'CONFIRM';
+        clearStorage();
     });
 }
 
@@ -476,19 +480,8 @@ confirmButton.addEventListener('click', () => {
 
 //letting user reset to a new puzzle
 resetter.addEventListener('click', () => {
-    localStorage.removeItem('permadiff');
-    localStorage.removeItem('currentPuzzle');
-    localStorage.removeItem('currentSolution');
-    localStorage.removeItem('startTime');
-    localStorage.removeItem('mistakeCounter');
-    localStorage.removeItem('milisecondsCounted');
-    localStorage.removeItem('puzzlesolved');
-    localStorage.removeItem('officialString');
-    diffScreen.className = '';
-    table.className = 'hidden';
+    clearStorage();
     resetter.className += ' hidden';
-    markerHolder.className += ' hidden';
-    confirmButton.textContent = 'CONFIRM';
 });
 
 //setting event listeners
@@ -542,27 +535,13 @@ document.addEventListener('keyup', e => {
                 let secondsSecondDigit = seconds - secondsFirstDigit*10;
                 diffScreen.className += ' hidden';
                 resetter.className += ' hidden';
-                localStorage.removeItem('currentPuzzle');
-                localStorage.removeItem('currentSolution');
-                localStorage.removeItem('milisecondsCounted');
                 winScreen(localStorage.getItem('mistakeCounter'), `${minutesFirstDigit}${minutesSecondDigit}:${secondsFirstDigit}${secondsSecondDigit}`);
                 winScreenActive = true;
                 localStorage.setItem('puzzlesolved', `${minutesFirstDigit}${minutesSecondDigit}:${secondsFirstDigit}${secondsSecondDigit}`);
                 newpuzzButton.addEventListener('click', () => {
                     let screen = document.getElementById('win_screen');
                     screen.className = 'hidden';
-                    localStorage.removeItem('permadiff');
-                    localStorage.removeItem('currentPuzzle');
-                    localStorage.removeItem('currentSolution');
-                    localStorage.removeItem('startTime');
-                    localStorage.removeItem('mistakeCounter');
-                    localStorage.removeItem('milisecondsCounted');
-                    localStorage.removeItem('puzzlesolved');
-                    localStorage.removeItem('officialString');
-                    diffScreen.className = '';
-                    table.className = 'hidden';
-                    markerHolder.className += ' hidden';
-                    confirmButton.textContent = 'CONFIRM';
+                    clearStorage();
                 });
             }
             localStorage.setItem('currentPuzzle', stringGenerate(cells));
@@ -637,18 +616,7 @@ shareButton.addEventListener('click', () => {
         newFromShare.addEventListener('click', () => {
             shareScreen.className = 'hidden';
             shareScreenActive = false;
-            localStorage.removeItem('permadiff');
-            localStorage.removeItem('currentPuzzle');
-            localStorage.removeItem('currentSolution');
-            localStorage.removeItem('startTime');
-            localStorage.removeItem('mistakeCounter');
-            localStorage.removeItem('milisecondsCounted');
-            localStorage.removeItem('puzzlesolved');
-            localStorage.removeItem('officialString');
-            diffScreen.className = '';
-            table.className = 'hidden';
-            markerHolder.className += ' hidden';
-            confirmButton.textContent = 'CONFIRM';
+            clearStorage();
         });
     }
 });
