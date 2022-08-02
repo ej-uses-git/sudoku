@@ -83,6 +83,20 @@ const officialSudokuString = (cells) => {
     return string;
 }
 
+const websitePuzzleID = (string) => {
+    let result = '';
+    let counter = 0;
+    for(let char of string) {
+        if(char.match(/[0-9]/)){
+            result += char;
+            counter++;
+        }
+        if(counter === 5){
+            return result;
+        }
+    }
+}
+
 //general functions
 const findObjectFromElement = (elem, arr) => arr[elem.parentElement.id.slice(elem.parentElement.id.indexOf('_') + 1)];
 const saveCells = arr => arr.map(cell => cell.storedValue);
@@ -392,6 +406,8 @@ let confirmButton = document.querySelector('.confirm');
 let warning = document.querySelector('.warning');
 let diff = 0;
 let permadiff = 0;
+let textdiff = '';
+let textpermadiff = '';
 diffButtons.forEach(button => {
     let ogClassName = button.className;
     //in safari and firefox, buttons do not automatically focus when clicked, thus:
@@ -403,15 +419,19 @@ diffButtons.forEach(button => {
         switch(button.id){
             case 'easy':
                 diff = 45;
+                textdiff = 'Easy';
                 break;
             case 'medium':
                 diff = 35;
+                textdiff = 'Medium';
                 break;
             case 'hard':
                 diff = 30;
+                textdiff = 'Hard';
                 break;
             case 'very':
                 diff = 24;
+                textdiff = 'Very Hard';
                 warning.textContent = 'WARNING: This may take a while.';
                 break;
         }
@@ -456,7 +476,9 @@ if(localStorage.hasOwnProperty('currentPuzzle') && localStorage.hasOwnProperty('
 confirmButton.addEventListener('click', () => {
     if(diff !== 0){
         permadiff = diff;
+        textpermadiff = textdiff;
         localStorage.setItem('permadiff', String(permadiff));
+        localStorage.setItem('textpermadiff', textpermadiff);
         let startTime = Date.now();
         localStorage.setItem('startTime', String(startTime));
         let mistakeCounter = 0;
@@ -602,7 +624,7 @@ shareButton.addEventListener('click', () => {
         shareScreen.className = '';
         shareScreenActive = true;
         copyStats.addEventListener('click', () => {
-            navigator.clipboard.writeText(`Mistakes: ${localStorage.getItem('mistakeCounter')} // Time Elapsed: ${localStorage.getItem('puzzlesolved')}`);
+            navigator.clipboard.writeText(`I solved puzzle #${websitePuzzleID(officialSudokuString(cells))} at difficulty level ${localStorage.getItem('textpermadiff')} over at EJ's Sudoku Site!\n\nMistakes: ${localStorage.getItem('mistakeCounter')} // Time Elapsed: ${localStorage.getItem('puzzlesolved')}\n\nPLACEHOLDER LINK blahblah.com`);
             setTimeout(() => {
                 alert('Copied your stats to the clipboard!');
             }, 400);
