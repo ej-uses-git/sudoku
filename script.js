@@ -578,26 +578,100 @@ document.addEventListener('keyup', e => {
                 emptyCellsAsElements[0].focus();
                 proceed = false;
             }
-            let currentCell = document.activeElement;
-            let currentCellAsObject = findObjectFromElement(currentCell, cells);
-            let currentColumn = columns[currentCellAsObject.colNumber].filter(cell => cell.displayValue === 0);;
-            let currentRow = rows[currentCellAsObject.rowNumber].filter(cell => cell.displayValue === 0);;
+
             if(proceed){
+                let currentCell = document.activeElement;
+                let currentObject = findObjectFromElement(currentCell, cells);
+                let currentColumn = emptyCells.filter(cell => cell.colNumber === currentObject.colNumber);
+                let currentRow = emptyCells.filter(cell => cell.rowNumber === currentObject.rowNumber);
+                let found = false;
+
                 if(e.code.includes('Up')){
-                    if(currentColumn[currentColumn.indexOf(currentCellAsObject) - 1]){
-                        currentColumn[currentColumn.indexOf(currentCellAsObject) - 1].asElement.focus();
+                    if(currentColumn[currentColumn.indexOf(currentObject) - 1]){
+                        currentColumn[currentColumn.indexOf(currentObject) - 1].asElement.focus();
+                    } else {
+                        for(let i = currentObject.colNumber + 1; i < 9; i++){
+                            let nextColumn = emptyCells.filter(cell => cell.colNumber === i).filter(cell => cell.rowNumber < currentObject.rowNumber);
+                            if(nextColumn[0]){
+                                nextColumn[0].asElement.focus();
+                                found = true;
+                                break;
+                            }
+                        }
+                        if(!found){
+                            for(let i = currentObject.colNumber - 1; i >= 0; i--){
+                                let lastColumn = emptyCells.filter(cell => cell.colNumber === i).filter(cell => cell.rowNumber < currentObject.rowNumber);
+                                if(lastColumn[0]){
+                                    lastColumn[0].asElement.focus();
+                                    break;
+                                }
+                            }
+                        }
                     }
                 } else if(e.code.includes('Right')){
-                    if(currentRow[currentRow.indexOf(currentCellAsObject) + 1]){
-                        currentRow[currentRow.indexOf(currentCellAsObject) + 1].asElement.focus();
+                    if(currentRow[currentRow.indexOf(currentObject) + 1]){
+                        currentRow[currentRow.indexOf(currentObject) + 1].asElement.focus();
+                    } else {
+                        for(let i = currentObject.rowNumber  + 1; i < 9; i++){
+                            let nextRow = emptyCells.filter(cell => cell.rowNumber === i).filter(cell => cell.colNumber > currentObject.colNumber);
+                            if(nextRow[0]){
+                                nextRow[0].asElement.focus();
+                                found = true;
+                                break;
+                            }
+                        }
+                        if(!found){
+                            for(let i = currentObject.rowNumber - 1; i >= 0; i--){
+                                let lastRow = emptyCells.filter(cell => cell.rowNumber === i).filter(cell => cell.colNumber > currentObject.colNumber);
+                                if(lastRow[0]){
+                                    lastRow[0].asElement.focus();
+                                    break;
+                                }
+                            }
+                        }
                     }
                 } else if(e.code.includes('Down')){
-                    if(currentColumn[currentColumn.indexOf(currentCellAsObject) + 1]){
-                        currentColumn[currentColumn.indexOf(currentCellAsObject) + 1].asElement.focus();
+                    if(currentColumn[currentColumn.indexOf(currentObject) + 1]){
+                        currentColumn[currentColumn.indexOf(currentObject) + 1].asElement.focus();
+                    } else {
+                        for(let i = currentObject.colNumber  + 1; i < 9; i++){
+                            let nextColumn = emptyCells.filter(cell => cell.colNumber === i).filter(cell => cell.rowNumber > currentObject.rowNumber);
+                            if(nextColumn[0]){
+                                nextColumn[0].asElement.focus();
+                                found = true;
+                                break;
+                            }
+                        }
+                        if(!found){
+                            for(let i = currentObject.colNumber - 1; i >= 0; i--){
+                                let lastColumn = emptyCells.filter(cell => cell.colNumber === i).filter(cell => cell.rowNumber > currentObject.rowNumber);
+                                if(lastColumn[0]){
+                                    lastColumn[0].asElement.focus();
+                                    break;
+                                }
+                            }
+                        }
                     }
                 } else if(e.code.includes('Left')){
-                    if(currentRow[currentRow.indexOf(currentCellAsObject) - 1]){
-                        currentRow[currentRow.indexOf(currentCellAsObject) - 1].asElement.focus();
+                    if(currentRow[currentRow.indexOf(currentObject) - 1]){
+                        currentRow[currentRow.indexOf(currentObject) - 1].asElement.focus();
+                    } else {
+                        for(let i = currentObject.rowNumber  + 1; i < 9; i++){
+                            let nextRow = emptyCells.filter(cell => cell.rowNumber === i).filter(cell => cell.colNumber < currentObject.colNumber);
+                            if(nextRow[0]){
+                                nextRow[0].asElement.focus();
+                                break;
+                            }
+                        }
+                        if(!found){
+                            for(let i = currentObject.rowNumber - 1; i >= 0; i--){
+                                let lastRow = emptyCells.filter(cell => cell.rowNumber === i).filter(cell => cell.colNumber < currentObject.colNumber);
+                                if(lastRow[0]){
+                                    lastRow[0].asElement.focus();
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }
