@@ -660,6 +660,7 @@ document.addEventListener('keyup', e => {
                             let nextRow = emptyCells.filter(cell => cell.rowNumber === i).filter(cell => cell.colNumber < currentObject.colNumber);
                             if(nextRow[0]){
                                 nextRow[0].asElement.focus();
+                                found = true;
                                 break;
                             }
                         }
