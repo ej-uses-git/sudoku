@@ -591,7 +591,7 @@ document.addEventListener('keyup', e => {
                         currentColumn[currentColumn.indexOf(currentObject) - 1].asElement.focus();
                     } else {
                         for(let i = currentObject.colNumber + 1; i < 9; i++){
-                            let nextColumn = emptyCells.filter(cell => cell.colNumber === i).filter(cell => cell.rowNumber < currentObject.rowNumber);
+                            let nextColumn = emptyCells.filter(cell => cell.colNumber === i && cell.rowNumber < currentObject.rowNumber).reverse();
                             if(nextColumn[0]){
                                 nextColumn[0].asElement.focus();
                                 found = true;
@@ -600,7 +600,7 @@ document.addEventListener('keyup', e => {
                         }
                         if(!found){
                             for(let i = currentObject.colNumber - 1; i >= 0; i--){
-                                let lastColumn = emptyCells.filter(cell => cell.colNumber === i).filter(cell => cell.rowNumber < currentObject.rowNumber);
+                                let lastColumn = emptyCells.filter(cell => cell.colNumber === i && cell.rowNumber < currentObject.rowNumber).reverse();
                                 if(lastColumn[0]){
                                     lastColumn[0].asElement.focus();
                                     break;
@@ -613,7 +613,7 @@ document.addEventListener('keyup', e => {
                         currentRow[currentRow.indexOf(currentObject) + 1].asElement.focus();
                     } else {
                         for(let i = currentObject.rowNumber  + 1; i < 9; i++){
-                            let nextRow = emptyCells.filter(cell => cell.rowNumber === i).filter(cell => cell.colNumber > currentObject.colNumber);
+                            let nextRow = emptyCells.filter(cell => cell.rowNumber === i && cell.colNumber > currentObject.colNumber);
                             if(nextRow[0]){
                                 nextRow[0].asElement.focus();
                                 found = true;
@@ -622,7 +622,7 @@ document.addEventListener('keyup', e => {
                         }
                         if(!found){
                             for(let i = currentObject.rowNumber - 1; i >= 0; i--){
-                                let lastRow = emptyCells.filter(cell => cell.rowNumber === i).filter(cell => cell.colNumber > currentObject.colNumber);
+                                let lastRow = emptyCells.filter(cell => cell.rowNumber === i && cell.colNumber > currentObject.colNumber);
                                 if(lastRow[0]){
                                     lastRow[0].asElement.focus();
                                     break;
@@ -634,41 +634,42 @@ document.addEventListener('keyup', e => {
                     if(currentColumn[currentColumn.indexOf(currentObject) + 1]){
                         currentColumn[currentColumn.indexOf(currentObject) + 1].asElement.focus();
                     } else {
-                        for(let i = currentObject.colNumber  + 1; i < 9; i++){
-                            let nextColumn = emptyCells.filter(cell => cell.colNumber === i).filter(cell => cell.rowNumber > currentObject.rowNumber);
-                            if(nextColumn[0]){
-                                nextColumn[0].asElement.focus();
+                        for(let i = currentObject.colNumber - 1; i >= 0; i--){
+                            let lastColumn = emptyCells.filter(cell => cell.colNumber === i && cell.rowNumber > currentObject.rowNumber);
+                            if(lastColumn[0]){
+                                lastColumn[0].asElement.focus();
                                 found = true;
                                 break;
                             }
                         }
                         if(!found){
-                            for(let i = currentObject.colNumber - 1; i >= 0; i--){
-                                let lastColumn = emptyCells.filter(cell => cell.colNumber === i).filter(cell => cell.rowNumber > currentObject.rowNumber);
-                                if(lastColumn[0]){
-                                    lastColumn[0].asElement.focus();
+                            for(let i = currentObject.colNumber  + 1; i < 9; i++){
+                                let nextColumn = emptyCells.filter(cell => cell.colNumber === i && cell.rowNumber > currentObject.rowNumber);
+                                if(nextColumn[0]){
+                                    nextColumn[0].asElement.focus();
                                     break;
                                 }
                             }
+                            
                         }
                     }
                 } else if(e.code.includes('Left')){
                     if(currentRow[currentRow.indexOf(currentObject) - 1]){
                         currentRow[currentRow.indexOf(currentObject) - 1].asElement.focus();
                     } else {
-                        for(let i = currentObject.rowNumber  + 1; i < 9; i++){
-                            let nextRow = emptyCells.filter(cell => cell.rowNumber === i).filter(cell => cell.colNumber < currentObject.colNumber);
-                            if(nextRow[0]){
-                                nextRow[0].asElement.focus();
+                        for(let i = currentObject.rowNumber - 1; i >= 0; i--){
+                            let lastRow = emptyCells.filter(cell => cell.rowNumber === i && cell.colNumber < currentObject.colNumber).reverse();
+                            if(lastRow[0]){
+                                lastRow[0].asElement.focus();
                                 found = true;
                                 break;
                             }
                         }
                         if(!found){
-                            for(let i = currentObject.rowNumber - 1; i >= 0; i--){
-                                let lastRow = emptyCells.filter(cell => cell.rowNumber === i).filter(cell => cell.colNumber < currentObject.colNumber);
-                                if(lastRow[0]){
-                                    lastRow[0].asElement.focus();
+                            for(let i = currentObject.rowNumber  + 1; i < 9; i++){
+                                let nextRow = emptyCells.filter(cell => cell.rowNumber === i && cell.colNumber < currentObject.colNumber).reverse();
+                                if(nextRow[0]){
+                                    nextRow[0].asElement.focus();
                                     break;
                                 }
                             }
