@@ -623,17 +623,26 @@ shareButton.addEventListener('click', () => {
         markerHolder.className += ' hidden';
         shareScreen.className = '';
         shareScreenActive = true;
+        let copyclicked = false;
         copyStats.addEventListener('click', () => {
-            navigator.clipboard.writeText(`I solved puzzle #${websitePuzzleID(officialSudokuString(cells))} at difficulty level ${localStorage.getItem('textpermadiff')} over at EJ's Sudoku Site!\n\nMistakes: ${localStorage.getItem('mistakeCounter')} // Time Elapsed: ${localStorage.getItem('puzzlesolved')}\n\nPLACEHOLDER LINK blahblah.com`);
-            setTimeout(() => {
-                alert('Copied your stats to the clipboard!');
-            }, 400);
+            if(copyclicked === false){
+                copyclicked = true;
+                navigator.clipboard.writeText(`I solved puzzle #${websitePuzzleID(officialSudokuString(cells))} at difficulty level ${localStorage.getItem('textpermadiff')} over at EJ's Sudoku Site!\n\nMistakes: ${localStorage.getItem('mistakeCounter')} // Time Elapsed: ${localStorage.getItem('puzzlesolved')}\n\nPLACEHOLDER LINK blahblah.com`);
+                setTimeout(() => {
+                    alert('Copied your stats to the clipboard!');
+                    copyclicked = false;
+                }, 400);
+            }
         });
         copyString.addEventListener('click', () => {
-            navigator.clipboard.writeText(`${localStorage.getItem('officialString')}`);
-            setTimeout(() => {
-                alert('Copied the empty puzzle to the clipboard (as an official sudoku string)!');
-            }, 400);
+            if(copyclicked === false){
+                copyclicked = true;
+                navigator.clipboard.writeText(`${localStorage.getItem('officialString')}`);
+                setTimeout(() => {
+                    alert('Copied the empty puzzle to the clipboard (as an official sudoku string)!');
+                    copyclicked = false;
+                }, 400);
+            }
         });
         newFromShare.addEventListener('click', () => {
             shareScreen.className = 'hidden';
