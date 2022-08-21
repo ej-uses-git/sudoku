@@ -703,7 +703,7 @@ shareButton.addEventListener('click', () => {
         copyStats.addEventListener('click', () => {
             if(copyclicked === false){
                 copyclicked = true;
-                navigator.clipboard.writeText(`I solved puzzle #${websitePuzzleID(officialSudokuString(cells))} at difficulty level ${localStorage.getItem('textpermadiff')} over at EJ's Sudoku Site!\n\nMistakes: ${localStorage.getItem('mistakeCounter')} // Time Elapsed: ${localStorage.getItem('puzzlesolved')}\n\nPLACEHOLDER LINK blahblah.com`);
+                navigator.clipboard.writeText(`I solved puzzle #${websitePuzzleID(officialSudokuString(cells))} at difficulty level ${localStorage.getItem('textpermadiff')} over at EJ's Sudoku Site!\n\nMistakes: ${localStorage.getItem('mistakeCounter')} // Time Elapsed: ${localStorage.getItem('puzzlesolved')}\n\nVisit us at https://ejs-sudoku.netlify.app !`);
                 setTimeout(() => {
                     alert('Copied your stats to the clipboard!');
                     copyclicked = false;
