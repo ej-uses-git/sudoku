@@ -603,9 +603,11 @@ document.addEventListener("keyup", (e) => {
           localStorage.setItem("mistakeCounter", String(mistakeCounter));
         });
 
-      emptyCellsAsElements[
+      let newCellToFocus = emptyCellsAsElements[
         emptyCellsAsElements.indexOf(nextCell.asElement) + 1
-      ].focus();
+      ];
+
+      if(newCellToFocus) newCellToFocus.focus();
 
       markerSetter(markers, rows);
 
