@@ -93,6 +93,8 @@ class Cell {
         this._asElement.className = "red";
         return 1;
       }
+    } else {
+      return 0;
     }
   }
 }
@@ -585,10 +587,7 @@ document.addEventListener("keyup", (e) => {
     let emptyCells = cells.filter((cell) => cell.displayValue === 0);
     let emptyCellsAsElements = emptyCells.map((cell) => cell.asElement);
     if (e.code.includes("Enter")) {
-      let nextCell =
-        emptyCellsAsElements[
-          emptyCellsAsElements.indexOf(document.activeElement) + 1
-        ];
+      let nextCell;
 
       cells
         .filter(
@@ -598,11 +597,15 @@ document.addEventListener("keyup", (e) => {
         )
         .forEach((cell) => {
           let mistake = cell.checkInput();
-          if (mistake === 0 && nextCell) nextCell.focus();
+          nextCell = cell;
           let mistakeCounter =
             Number(localStorage.getItem("mistakeCounter")) + mistake;
           localStorage.setItem("mistakeCounter", String(mistakeCounter));
         });
+
+      emptyCellsAsElements[
+        emptyCellsAsElements.indexOf(nextCell.asElement) + 1
+      ].focus();
 
       markerSetter(markers, rows);
 
