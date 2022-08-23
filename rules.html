@@ -1,12 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Rules of Sudoku</title>
-</head>
-<body>
-    
-</body>
+    <link rel="icon" type="image/x-icon" href="./light_favicon.ico" />
+    <link rel="stylesheet" href="./style.css" />
+    <script>
+      let root = document.querySelector(":root");
+      let favicon = document.querySelector('link[rel="icon"]');
+      if (localStorage.getItem("colormode") === "dark") {
+        //we are in dark mode
+        root.style.setProperty("--main", "black");
+        root.style.setProperty("--second", "white");
+        root.style.setProperty("--alt", "#dfdfdf");
+        root.style.setProperty("--greener", "#005000");
+        favicon.setAttribute("href", "./dark_favicon.ico");
+      } else {
+        //default: light mode
+        localStorage.setItem("colormode", "light");
+        root.style.setProperty("--main", "white");
+        root.style.setProperty("--second", "black");
+        root.style.setProperty("--alt", "#333");
+        root.style.setProperty("--greener", "#009a00");
+        favicon.setAttribute("href", "./light_favicon.ico");
+      }
+    </script>
+  </head>
+  <body>
+    <h1>The Rules of Sudoku</h1>
+    <img src="./light_image.png" />
+    <p>
+      The game of sudoku consists of a 9 by 9 grid of cells, subdivided into
+      rows, columns, and block.<br />
+      The goal of the game: to fill and complete the grid using the numbers from
+      1 to 9.<br />
+      However, several rules restrict the player while doing so.
+    </p>
+    <h2>
+      Rule 1 - Each row must contain the numbers from 1 to 9, without
+      repetitions
+    </h2>
+    <h2>
+      Rule 2 - Each column must contain the numbers from 1 to 9, without
+      repetitions
+    </h2>
+    <h2>
+      Rule 3 - Each block must contain the numbers from 1 to 9, without
+      repetitions
+    </h2>
+    <p>
+      In other words, each digit from 1 to 9 may only appear once in a given
+      row, column, or block.
+    </p>
+    <h2>Other details to take into consideration:</h2>
+    <h2>1. Each puzzle has a unique solution</h2>
+    <p>
+      Each sudoku puzzle generated here at
+      <a href="https://ejs-sudoku.netlify.app">EJ's Sudoku</a> has one, and ONLY
+      one, unique solution.<br />
+      Therefore, guessing here can be double-checked by pressing the Enter key,
+      which will mark every correct guess as green,<br />
+      and every incorrect guess as red and changeable, allowing the player to
+      attempt again.<br />
+      For the puzzle to be completed, Enter must be pressed and every tile
+      (which wasn't filled to begin with) must be green :)
+    </p>
+    <h2>2. Guessing is not required</h2>
+    <p>
+      Every sudoku puzzle here gives the player enough information from the
+      beggining tiles to solve the puzzle logically.<br />
+      There is no situation in which a player will be required to guess the
+      contents of a cell.
+    </p>
+    <footer>
+      <button class="reset btn hidden">New Puzzle</button>
+      <button class="mode-selector btn">Light Mode</button>
+      <p class="footnote">Website coded and designed by Evyatar Shafran</p>
+    </footer>
+    <script>
+      let modeButton = document.querySelector(".mode-selector");
+      let image = document.querySelector("img");
+      if (localStorage.getItem("colormode") === "dark") {
+        modeButton.textContent = "Light Mode";
+        image.src = "./dark_image.png";
+      } else {
+        modeButton.textContent = "Dark Mode";
+        image.src = "./light_image.png";
+      }
+      modeButton.addEventListener("click", () => {
+        if (localStorage.getItem("colormode") === "light") {
+          //set to dark mode
+          localStorage.setItem("colormode", "dark");
+          root.style.setProperty("--main", "black");
+          root.style.setProperty("--second", "white");
+          root.style.setProperty("--alt", "#dfdfdf");
+          root.style.setProperty("--greener", "#005000");
+          favicon.setAttribute("href", "./dark_favicon.ico");
+          image.src = "./dark_image.png";
+          modeButton.textContent = "Light Mode";
+        } else if (localStorage.getItem("colormode") === "dark") {
+          //set to light mode
+          localStorage.setItem("colormode", "light");
+          root.style.setProperty("--main", "white");
+          root.style.setProperty("--second", "black");
+          root.style.setProperty("--alt", "#333");
+          root.style.setProperty("--greener", "#009a00");
+          favicon.setAttribute("href", "./light_favicon.ico");
+          image.src = "./light_image.png";
+          modeButton.textContent = "Dark Mode";
+        }
+      });
+    </script>
+  </body>
 </html>
