@@ -1,426 +1,445 @@
 /*variables for changing from lightmode to darkmode*/
 :root {
-    --main: white;
-    --second: black;
-    --alt: #333;
-    --greener: #009a00;
+  --main: white;
+  --second: black;
+  --alt: #333;
+  --greener: #009a00;
 }
 
 /*general styles*/
 * {
-    box-sizing: border-box;
-    position: relative;
+  box-sizing: border-box;
+  position: relative;
 
-    z-index: 5;
+  z-index: 5;
 }
 
 body {
-    font-family: sans-serif;
+  font-family: sans-serif;
 
-    color: var(--second);
-    background-color: var(--main);
+  color: var(--second);
+  background-color: var(--main);
 }
 
 main {
-    display: block;
-    height: fit-content;
-    width: fit-content;
-    margin: auto;
+  display: block;
+  height: fit-content;
+  width: fit-content;
+  margin: auto;
 }
 
 .hidden {
-    visibility: hidden;
+  visibility: hidden;
 
-    z-index: 0;
+  z-index: 0;
 }
 
 .btn {
-    border-radius: 5%;
-    border: 2.5px solid var(--alt);
+  border-radius: 5%;
+  border: 2.5px solid var(--alt);
 
-    font-weight: bold;
+  font-weight: bold;
 
-    color: var(--alt);
-    background-color: var(--main);
+  color: var(--alt);
+  background-color: var(--main);
 }
 
 .btn:hover {
-    cursor: pointer;
+  cursor: pointer;
 
-    color: var(--main);
-    background-color: var(--alt);
+  color: var(--main);
+  background-color: var(--alt);
 }
 
 .clicked {
-    color: var(--main);
-    background-color: var(--alt);
+  color: var(--main);
+  background-color: var(--alt);
 }
 
 /*footer and header*/
 h1 {
-    display: block;
+  display: block;
 
-    width: 400px;
+  width: 400px;
 
-    margin: auto;
-    margin-top: 25px;
-    text-align: center;
+  margin: auto;
+  margin-top: 25px;
+  text-align: center;
+}
+
+h2 {
+  display: block;
+
+  font-size: 18px;
+
+  margin: auto;
+  margin-top: 25px;
+  text-align: center;
 }
 
 p {
-    width: 400px;
+  width: 400px;
 
-    margin: 20px auto;
-    text-align: center;
+  margin: 20px auto;
+  text-align: center;
 
-    font-size: 14px;
+  font-size: 14px;
 
-    opacity: 95%;
+  opacity: 95%;
 }
 
 p.footnote {
-    margin-top: 10px;
-    margin-bottom: 0px;
+  margin-top: 10px;
+  margin-bottom: 0px;
 
-    font-size: 12px;
+  font-size: 12px;
 }
 
 a {
-    font-size: 14px;
+  font-size: 14px;
 
-    color: var(--alt);
-    
-    text-decoration: none ;
+  color: var(--alt);
+
+  text-decoration: none;
 }
 
 a:hover {
-    color: var(--alt);
-    
-    text-decoration: underline;
+  color: var(--alt);
+
+  text-decoration: underline;
+}
+
+img {
+  display: block;
+  width: 30%;
+  margin: auto;
 }
 
 /*difficulty screen*/
 #difficulty_settings {
-    position: absolute;
-    display: block;
+  position: absolute;
+  display: block;
 
-    z-index: 10;
-    
-    width: 410px;
-    height: 200px;
+  z-index: 10;
 
-    left: 0;
-    right: 0;
-    margin-top: 200px;
-    margin-right: auto;
-    margin-left: auto;
-    text-align: center;
+  width: 410px;
+  height: 200px;
 
-    border-radius: 2%;
-    border: 2px solid var(--second);
+  left: 0;
+  right: 0;
+  margin-top: 200px;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
 
-    color: var(--second);
-    background-color: var(--main);
+  border-radius: 2%;
+  border: 2px solid var(--second);
+
+  color: var(--second);
+  background-color: var(--main);
 }
 
 .diff {
-    width: 90px;
-    height: 30px;
+  width: 90px;
+  height: 30px;
 }
 
 .confirm {
-    display: block;
+  display: block;
 
-    width: 90px;
-    height: 40px;
-    
-    margin: 25px auto 0px;
+  width: 90px;
+  height: 40px;
+
+  margin: 25px auto 0px;
 }
 
 .warning {
-    display: block;
+  display: block;
 
-    margin-top: 10px;
+  margin-top: 10px;
 
-    font-weight: bold;   
+  font-weight: bold;
 }
 
 /*sudoku board*/
 table {
-    display: inline-block;
+  display: inline-block;
 
-    width: 405px;
-    min-width: 300px;
-    max-width: 405px;
-    aspect-ratio: 1/1;
+  width: 405px;
+  min-width: 300px;
+  max-width: 405px;
+  aspect-ratio: 1/1;
 
-    margin: auto;
+  margin: auto;
 
-    border: 1px solid var(--alt);
+  border: 1px solid var(--alt);
 }
 
-.box-row, .in-box-row {
-    display: block;
-    
-    width: 100%;
-    height: 33.3%;
+.box-row,
+.in-box-row {
+  display: block;
+
+  width: 100%;
+  height: 33.3%;
 }
 
-.box, .cell {
-    display: inline-block;
-    
-    width: 33.3%;
-    height: 100%;
-    
-    border: 1.25px solid var(--alt);
+.box,
+.cell {
+  display: inline-block;
+
+  width: 33.3%;
+  height: 100%;
+
+  border: 1.25px solid var(--alt);
 }
 
 .cell {
-    text-align: center;
+  text-align: center;
 }
 
 input {
-    display: block;
+  display: block;
 
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 
-    text-align: center;
+  text-align: center;
 
-    outline: none;
-    border: none;
+  outline: none;
+  border: none;
 
-    color: var(--alt);
-    opacity: 90%;
-    background-color: inherit;
+  color: var(--alt);
+  opacity: 90%;
+  background-color: inherit;
 }
 
 input:disabled {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .green {
-    color: green;
+  color: green;
 }
 
 .red {
-    color: red;
-    font-weight: bold;
+  color: red;
+  font-weight: bold;
 }
 
 /*number markers*/
 .marker-holder {
-    display: inline-block;
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);  
-    
-    margin: auto 30px;
+  display: inline-block;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+
+  margin: auto 30px;
 }
 
 #markers {
-    list-style: none;
-    padding: 0;
-    height: 100%;
+  list-style: none;
+  padding: 0;
+  height: 100%;
 }
 
 #markers li {
-    margin: 20px 0;
+  margin: 20px 0;
 
-    font-weight: bold;
-    
-    color: var(--alt);
+  font-weight: bold;
+
+  color: var(--alt);
 }
 
 /*colormode & new puzzle buttons*/
-.mode-selector, .reset {
-    display: block;
+.mode-selector,
+.reset {
+  display: block;
 
-    width: 90px;
+  width: 90px;
 
-    margin-top: 20px;
-    margin-right: auto;
-    margin-left: auto;
+  margin-top: 20px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 /*win screen*/
 #win_screen {
-    position: absolute;
-    display: block;
+  position: absolute;
+  display: block;
 
-    z-index: 10;
-    
-    width: 410px;
-    height: 450px;
+  z-index: 10;
 
-    left: 0;
-    right: 0;
-    margin-top: 50px;
-    margin-right: auto;
-    margin-left: auto;
-    text-align: center;
+  width: 410px;
+  height: 450px;
 
-    border: 2px solid var(--second);
-    border-radius: 2%;
+  left: 0;
+  right: 0;
+  margin-top: 50px;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
 
-    color: var(--alt);
-    background-color: var(--main);
+  border: 2px solid var(--second);
+  border-radius: 2%;
+
+  color: var(--alt);
+  background-color: var(--main);
 }
 
 #win_screen.heading {
-    margin-top: 30px;
-    margin-bottom: 5px;
+  margin-top: 30px;
+  margin-bottom: 5px;
 }
 
 #win_screen.subheading {
-    margin-top: 5px;
+  margin-top: 5px;
 }
 
 #stats {
-    width: 90%;
-    margin-top: 45px;
-    margin-right: auto;
-    margin-bottom: 50px;
-    margin-left: auto;
+  width: 90%;
+  margin-top: 45px;
+  margin-right: auto;
+  margin-bottom: 50px;
+  margin-left: auto;
 
-    border: 1.5px solid var(--second);
-    border-radius: 3%;
+  border: 1.5px solid var(--second);
+  border-radius: 3%;
 }
 
 .stat-label {
-    width: fit-content;
+  width: fit-content;
 
-    margin: 8px auto 5px;
+  margin: 8px auto 5px;
 
-    font-size: 15px;
+  font-size: 15px;
 }
 
 .stat-label h3 {
-    margin: 0;
-    
-    font-size: 16px;
+  margin: 0;
+
+  font-size: 16px;
 }
 
 .stat-holder {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .stat-block {
-    display: inline-block;
+  display: inline-block;
 
-    width: 150px;
-    height: 95px;
-    margin-right: 10px;
-    margin-left: 10px;
-    
-    vertical-align: top;
-    
-    border: 1px solid var(--second);
-    border-radius: 5%;
+  width: 150px;
+  height: 95px;
+  margin-right: 10px;
+  margin-left: 10px;
 
-    color: var(--main);
-    background-color: var(--alt);
+  vertical-align: top;
+
+  border: 1px solid var(--second);
+  border-radius: 5%;
+
+  color: var(--main);
+  background-color: var(--alt);
 }
 
 .stat-block h4 {
-    width: 100px;
+  width: 100px;
 
-    margin: 10px auto;
+  margin: 10px auto;
 }
 
 .stat-block div {
-    width: 50px;
-    height: 20px;
+  width: 50px;
+  height: 20px;
 
-    margin: auto;
+  margin: auto;
 
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .winscreen-btn {
-    position: relative;
-    display: inline-blockblock;
-    width: 150px;
-    height: 75px;
+  position: relative;
+  display: inline-blockblock;
+  width: 150px;
+  height: 75px;
 
-    margin-bottom: 50px;
-    margin-left: 10px;
-    margin-right: 10px;
+  margin-bottom: 50px;
+  margin-left: 10px;
+  margin-right: 10px;
 
-    border-radius: 5%;
-    border: 2.5px solid var(--second);
+  border-radius: 5%;
+  border: 2.5px solid var(--second);
 
-    font-weight: bold;
+  font-weight: bold;
 
-    color: var(--main);
-    background-color: var(--second);
+  color: var(--main);
+  background-color: var(--second);
 }
 
 .winscreen-btn:hover {
-    cursor: pointer;
+  cursor: pointer;
 
-    color: var(--second);
-    background-color: var(--main);
+  color: var(--second);
+  background-color: var(--main);
 }
 
 #share {
-    background-color: green;
+  background-color: green;
 }
 
 #share:hover {
-    background-color: var(--greener);
-    color: var(--main);
+  background-color: var(--greener);
+  color: var(--main);
 }
 
 /* share screen */
 #share_screen {
-    position: absolute;
-    display: block;
+  position: absolute;
+  display: block;
 
-    z-index: 10;
-    
-    width: 410px;
-    height: 380px;
+  z-index: 10;
 
-    left: 0;
-    right: 0;
-    margin-top: 100px;
-    margin-right: auto;
-    margin-left: auto;
-    text-align: center;
+  width: 410px;
+  height: 380px;
 
-    border: 2px solid var(--second);
-    border-radius: 2%;
+  left: 0;
+  right: 0;
+  margin-top: 100px;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
 
-    color: var(--alt);
-    background-color: var(--main);
+  border: 2px solid var(--second);
+  border-radius: 2%;
+
+  color: var(--alt);
+  background-color: var(--main);
 }
 
 .share-block {
-    margin-top: 25px;
-    height: 100px
+  margin-top: 25px;
+  height: 100px;
 }
 
 #new_from_share {
-    margin-top: 30px;
+  margin-top: 30px;
 }
 
 .copy:hover {
-    background-color: var(--greener);
-    color: var(--alt);
+  background-color: var(--greener);
+  color: var(--alt);
 }
 
 #stats_display {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 #string_display {
-    font-size: 14px;
-    height: 30px;
-    overflow-wrap: break-word;
-    margin-top: 10px;
-    margin-right: 40px;
-    margin-left: 40px
+  font-size: 14px;
+  height: 30px;
+  overflow-wrap: break-word;
+  margin-top: 10px;
+  margin-right: 40px;
+  margin-left: 40px;
 }
