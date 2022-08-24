@@ -14,18 +14,37 @@
   z-index: 5;
 }
 
+html {
+  height: 100%;
+  width: 100%;
+}
+
 body {
   font-family: sans-serif;
 
   color: var(--second);
   background-color: var(--main);
+
+  width: 100%;
+  height: 100%;
+  margin: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 }
 
 main {
-  display: block;
+  display: flex;
+  gap: 2vw;
+  padding: 3vw;
   height: fit-content;
-  width: fit-content;
-  margin: auto;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  justify-items: center;
 }
 
 .hidden {
@@ -57,13 +76,20 @@ main {
 }
 
 /*footer and header*/
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
 h1 {
   display: block;
 
-  width: 400px;
+  width: 70vw;
 
-  margin: auto;
-  margin-top: 25px;
+  margin: 0;
   text-align: center;
 }
 
@@ -72,31 +98,25 @@ h2 {
 
   font-size: 18px;
 
-  margin: auto;
-  margin-top: 25px;
+  margin: 0;
   text-align: center;
 }
 
 p {
-  width: 400px;
-
-  margin: 20px auto;
+  margin: 0;
   text-align: center;
 
-  font-size: 14px;
+  font-size: 4vw;
 
   opacity: 95%;
 }
 
 p.footnote {
-  margin-top: 10px;
-  margin-bottom: 0px;
-
-  font-size: 12px;
+  font-size: 3.5vw;
 }
 
 a {
-  font-size: 14px;
+  font-size: 4vw;
 
   color: var(--alt);
 
@@ -115,22 +135,38 @@ img {
   margin: auto;
 }
 
+footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3vw;
+}
+
 /*difficulty screen*/
 #difficulty_settings {
   position: absolute;
-  display: block;
+  display: grid;
+
+  grid-template: repeat(4, 1fr) / repeat(4, 1fr);
+  grid-template-areas:
+    "title title title title"
+    "easy medium-diff hard very"
+    ". confirm confirm ."
+    "warning warning warning warning";
+  align-items: center;
+  justify-items: center;
+  gap: 2vw 1vw;
 
   z-index: 10;
 
-  width: 410px;
-  height: 200px;
+  width: 90%;
+  height: 45vw;
 
-  left: 0;
-  right: 0;
-  margin-top: 200px;
-  margin-right: auto;
-  margin-left: auto;
+  /* left: 0;
+  right: 0; */
   text-align: center;
+  padding: 1vw;
 
   border-radius: 2%;
   border: 2px solid var(--second);
@@ -140,34 +176,47 @@ img {
 }
 
 .diff {
-  width: 90px;
-  height: 30px;
+  width: 100%;
+  height: 10vw;
+  font-size: 2.7vw;
+  font-weight: bolder;
+}
+
+#easy {
+  grid-area: easy;
+}
+#medium {
+  grid-area: medium-diff;
+}
+#hard {
+  grid-area: hard;
+}
+#very {
+  grid-area: very;
 }
 
 .confirm {
   display: block;
 
-  width: 90px;
-  height: 40px;
-
-  margin: 25px auto 0px;
+  width: 80%;
+  height: 10vw;
+  grid-area: confirm;
 }
 
 .warning {
   display: block;
-
-  margin-top: 10px;
-
   font-weight: bold;
+  grid-area: warning;
+}
+
+#difficulty_settings .heading {
+  grid-area: title;
 }
 
 /*sudoku board*/
 table {
   display: inline-block;
 
-  width: 405px;
-  min-width: 300px;
-  max-width: 405px;
   aspect-ratio: 1/1;
 
   margin: auto;
@@ -204,6 +253,7 @@ input {
   height: 100%;
 
   text-align: center;
+  font-size: 3vw;
 
   outline: none;
   border: none;
@@ -230,12 +280,7 @@ input:disabled {
 .marker-holder {
   display: inline-block;
   margin: 0;
-  position: absolute;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
-
-  margin: auto 30px;
+  font-size: 4vw;
 }
 
 #markers {
@@ -256,29 +301,27 @@ input:disabled {
 .mode-selector,
 .reset {
   display: block;
-
-  width: 90px;
-
-  margin-top: 20px;
-  margin-right: auto;
-  margin-left: auto;
+  height: 10vw;
+  width: 40%;
+  font-size: 3vw;
 }
 
 /*win screen*/
 #win_screen {
   position: absolute;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  margin: auto;
 
   z-index: 10;
 
-  width: 410px;
-  height: 450px;
+  width: 90%;
+  height: 110vw;
 
   left: 0;
   right: 0;
-  margin-top: 50px;
-  margin-right: auto;
-  margin-left: auto;
   text-align: center;
 
   border: 2px solid var(--second);
@@ -293,27 +336,35 @@ input:disabled {
   margin-bottom: 5px;
 }
 
-#win_screen.subheading {
-  margin-top: 5px;
+#win_screen .subheading {
+  margin: 0;
 }
 
 #stats {
   width: 90%;
-  margin-top: 45px;
-  margin-right: auto;
-  margin-bottom: 50px;
-  margin-left: auto;
+  height: 45vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 
   border: 1.5px solid var(--second);
   border-radius: 3%;
 }
 
+.stat-holder {
+  width: 90%;
+}
+
+.stat-container {
+  width: 100%;
+  display: flex;
+  height: 25vw;
+}
+
 .stat-label {
   width: fit-content;
-
-  margin: 8px auto 5px;
-
-  font-size: 15px;
+  font-size: 4vw;
 }
 
 .stat-label h3 {
@@ -322,14 +373,10 @@ input:disabled {
   font-size: 16px;
 }
 
-.stat-holder {
-  margin-bottom: 10px;
-}
-
 .stat-block {
   display: inline-block;
 
-  width: 150px;
+  width: 100%;
   height: 95px;
   margin-right: 10px;
   margin-left: 10px;
@@ -358,15 +405,17 @@ input:disabled {
   font-weight: bold;
 }
 
+.winscreen-buttons-div {
+  display: flex;
+  width: 80%;
+  gap: 5%;
+}
+
 .winscreen-btn {
   position: relative;
   display: inline-blockblock;
-  width: 150px;
-  height: 75px;
-
-  margin-bottom: 50px;
-  margin-left: 10px;
-  margin-right: 10px;
+  width: 100%;
+  height: 20vw;
 
   border-radius: 5%;
   border: 2.5px solid var(--second);
@@ -396,18 +445,16 @@ input:disabled {
 /* share screen */
 #share_screen {
   position: absolute;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 
   z-index: 10;
 
-  width: 410px;
-  height: 380px;
+  width: 90%;
+  height: 100vw;
 
-  left: 0;
-  right: 0;
-  margin-top: 100px;
-  margin-right: auto;
-  margin-left: auto;
   text-align: center;
 
   border: 2px solid var(--second);
@@ -418,12 +465,11 @@ input:disabled {
 }
 
 .share-block {
-  margin-top: 25px;
-  height: 100px;
+  height: 10vw;
 }
 
 #new_from_share {
-  margin-top: 30px;
+  width: 60%;
 }
 
 .copy:hover {
@@ -431,15 +477,9 @@ input:disabled {
   color: var(--alt);
 }
 
+#string_display,
 #stats_display {
-  font-size: 16px;
-}
-
-#string_display {
-  font-size: 14px;
-  height: 30px;
+  font-size: 4vw;
+  height: 7vw;
   overflow-wrap: break-word;
-  margin-top: 10px;
-  margin-right: 40px;
-  margin-left: 40px;
 }
