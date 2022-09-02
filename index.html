@@ -35,21 +35,21 @@
           Share your statistics:
           <div id="stats_display" disabled></div>
         </h2>
-        <button id="copy_button_1" class="copy btn">Copy to clipboard</button>
+        <button id="copy_button_1" class="copy btn">Copy to Clipboard</button>
       </div>
       <div id="share_string" class="share-block">
         <h2 class="heading">
           Share the puzzle code:
           <div id="string_display" disabled></div>
         </h2>
-        <button id="copy_button_2" class="copy btn">Copy to clipboard</button>
+        <button id="copy_button_2" class="copy btn">Copy to Clipboard</button>
       </div>
       <button id="new_from_share" class="winscreen-btn">New Puzzle</button>
     </div>
     <div id="win_screen" class="hidden">
       <div class="headings-div">
-        <h2 class="heading">CONGRATULATIONS!</h2>
-        <h3 class="subheading">You solved the puzzle.</h3>
+        <h2 class="heading" id="winscreen-heading">CONGRATULATIONS!</h2>
+        <h3 class="subheading" id="winscreen-subheading">You solved the puzzle.</h3>
       </div>
       <div id="stats">
         <div class="stat-label">
@@ -75,16 +75,18 @@
     </div>
     <div id="difficulty_settings">
       <h2 class="heading">SELECT DIFFICULTY:</h2>
-      <button class="diff btn" id="easy">Easy</button>
-      <button class="diff btn" id="medium">Medium</button>
-      <button class="diff btn" id="hard">Hard</button>
-      <button class="diff btn" id="very">Very Hard</button>
+      <div class="diff-btn-holder">
+        <button class="diff btn" id="easy">Easy</button>
+        <button class="diff btn" id="medium">Medium</button>
+        <button class="diff btn" id="hard">Hard</button>
+        <button class="diff btn" id="very">Very Hard</button>
+      </div>
       <button class="confirm btn">CONFIRM</button>
       <p class="warning"></p>
     </div>
     <header>
-      <h1>PLAY SUDOKU</h1>
-      <p>
+      <h1 class="game-heading">PLAY SUDOKU</h1>
+      <p class="game-subheading">
         (Click <a href="./rules.html" target="_blank">here</a> for the rules)
       </p>
     </header>
