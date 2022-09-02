@@ -10,8 +10,15 @@
 * {
   box-sizing: border-box;
   position: relative;
+  margin: 0;
+  padding: 0;
 
   z-index: 5;
+}
+
+html {
+  height: 100vh;
+  width: 100vw;
 }
 
 body {
@@ -19,13 +26,26 @@ body {
 
   color: var(--second);
   background-color: var(--main);
+
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 }
 
 main {
-  display: block;
+  display: flex;
+  gap: 2vw;
+  padding: 3vw;
   height: fit-content;
-  width: fit-content;
-  margin: auto;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  justify-items: center;
 }
 
 .hidden {
@@ -57,46 +77,44 @@ main {
 }
 
 /*footer and header*/
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
 h1 {
   display: block;
 
-  width: 400px;
+  width: 70vw;
 
-  margin: auto;
-  margin-top: 25px;
   text-align: center;
 }
 
 h2 {
   display: block;
 
-  font-size: 18px;
+  font-size: 4vw;
 
-  margin: auto;
-  margin-top: 25px;
   text-align: center;
 }
 
 p {
-  width: 400px;
-
-  margin: 20px auto;
   text-align: center;
 
-  font-size: 14px;
+  font-size: 4vw;
 
   opacity: 95%;
 }
 
 p.footnote {
-  margin-top: 10px;
-  margin-bottom: 0px;
-
-  font-size: 12px;
+  font-size: 3.5vw;
 }
 
 a {
-  font-size: 14px;
+  font-size: 4vw;
 
   color: var(--alt);
 
@@ -112,25 +130,34 @@ a:hover {
 img {
   display: block;
   width: 30%;
-  margin: auto;
+}
+
+footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5vw;
 }
 
 /*difficulty screen*/
 #difficulty_settings {
   position: absolute;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+  justify-content: space-around;
 
   z-index: 10;
 
-  width: 410px;
-  height: 200px;
+  width: 94vw;
+  height: 60vw;
 
-  left: 0;
-  right: 0;
-  margin-top: 200px;
-  margin-right: auto;
-  margin-left: auto;
+  /* left: 0;
+  right: 0; */
   text-align: center;
+  padding: 1vw;
 
   border-radius: 2%;
   border: 2px solid var(--second);
@@ -139,38 +166,58 @@ img {
   background-color: var(--main);
 }
 
+.diff-btn-holder {
+  display: flex;
+  gap: 2vw;
+}
+
 .diff {
-  width: 90px;
-  height: 30px;
+  width: 20vw;
+  height: 15vw;
+  font-size: 3.4vw;
+  font-weight: bolder;
+}
+
+#easy {
+  grid-area: easy;
+}
+#medium {
+  grid-area: medium-diff;
+}
+#hard {
+  grid-area: hard;
+}
+#very {
+  grid-area: very;
 }
 
 .confirm {
   display: block;
 
-  width: 90px;
-  height: 40px;
+  font-size: 3.5vw;
 
-  margin: 25px auto 0px;
+  width: 30vw;
+  height: 15vw;
+  grid-area: confirm;
 }
 
 .warning {
   display: block;
-
-  margin-top: 10px;
-
   font-weight: bold;
+  grid-area: warning;
+  height: 3vw;
+}
+
+#difficulty_settings .heading {
+  grid-area: title;
 }
 
 /*sudoku board*/
 table {
   display: inline-block;
 
-  width: 405px;
-  min-width: 300px;
-  max-width: 405px;
+  width: 96vw;
   aspect-ratio: 1/1;
-
-  margin: auto;
 
   border: 1px solid var(--alt);
 }
@@ -204,6 +251,7 @@ input {
   height: 100%;
 
   text-align: center;
+  font-size: 3.5vw;
 
   outline: none;
   border: none;
@@ -229,24 +277,23 @@ input:disabled {
 /*number markers*/
 .marker-holder {
   display: inline-block;
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  -ms-transform: translateY(-50%);
-  transform: translateY(-50%);
+  height: 50vh;
 
-  margin: auto 30px;
+  font-size: 3vw;
 }
 
 #markers {
   list-style: none;
-  padding: 0;
+
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3vh;
 }
 
 #markers li {
-  margin: 20px 0;
-
   font-weight: bold;
 
   color: var(--alt);
@@ -256,29 +303,27 @@ input:disabled {
 .mode-selector,
 .reset {
   display: block;
-
-  width: 90px;
-
-  margin-top: 20px;
-  margin-right: auto;
-  margin-left: auto;
+  width: 40%;
+  font-size: 3vw;
+  height: 9vw;
 }
 
 /*win screen*/
 #win_screen {
   position: absolute;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  margin: auto;
 
   z-index: 10;
 
-  width: 410px;
-  height: 450px;
+  width: 90%;
+  height: 90vw;
 
   left: 0;
   right: 0;
-  margin-top: 50px;
-  margin-right: auto;
-  margin-left: auto;
   text-align: center;
 
   border: 2px solid var(--second);
@@ -288,51 +333,50 @@ input:disabled {
   background-color: var(--main);
 }
 
-#win_screen.heading {
-  margin-top: 30px;
-  margin-bottom: 5px;
+#winscreen-heading {
+  font-size: 6vw;
 }
 
-#win_screen.subheading {
-  margin-top: 5px;
+#winscreen-subheading {
+  font-size: 4vw;
 }
 
 #stats {
-  width: 90%;
-  margin-top: 45px;
-  margin-right: auto;
-  margin-bottom: 50px;
-  margin-left: auto;
+  width: 75vw;
+  height: 35vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 
   border: 1.5px solid var(--second);
   border-radius: 3%;
 }
 
+.stat-holder {
+  width: 70vw;
+}
+
+.stat-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
 .stat-label {
   width: fit-content;
-
-  margin: 8px auto 5px;
-
-  font-size: 15px;
-}
-
-.stat-label h3 {
-  margin: 0;
-
-  font-size: 16px;
-}
-
-.stat-holder {
-  margin-bottom: 10px;
+  font-size: 4vw;
 }
 
 .stat-block {
-  display: inline-block;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: column;
 
-  width: 150px;
-  height: 95px;
-  margin-right: 10px;
-  margin-left: 10px;
+  text-align: center;
+  width: 30vw;
+  height: 22vw;
 
   vertical-align: top;
 
@@ -341,32 +385,22 @@ input:disabled {
 
   color: var(--main);
   background-color: var(--alt);
+
+  font-size: 3.3vw;
 }
 
-.stat-block h4 {
-  width: 100px;
-
-  margin: 10px auto;
-}
-
-.stat-block div {
-  width: 50px;
-  height: 20px;
-
-  margin: auto;
-
-  font-weight: bold;
+.winscreen-buttons-div {
+  display: flex;
+  justify-content: space-around;
+  width: 70vw;
 }
 
 .winscreen-btn {
   position: relative;
   display: inline-blockblock;
-  width: 150px;
-  height: 75px;
-
-  margin-bottom: 50px;
-  margin-left: 10px;
-  margin-right: 10px;
+  width: 30vw;
+  height: 18vw;
+  font-size: 3.5vw;
 
   border-radius: 5%;
   border: 2.5px solid var(--second);
@@ -396,18 +430,16 @@ input:disabled {
 /* share screen */
 #share_screen {
   position: absolute;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 
   z-index: 10;
 
-  width: 410px;
-  height: 380px;
+  width: 90vw;
+  height: 84vw;
 
-  left: 0;
-  right: 0;
-  margin-top: 100px;
-  margin-right: auto;
-  margin-left: auto;
   text-align: center;
 
   border: 2px solid var(--second);
@@ -418,12 +450,20 @@ input:disabled {
 }
 
 .share-block {
-  margin-top: 25px;
-  height: 100px;
+  height: 12vw;
+}
+
+.share-block .heading {
+  font-size: 5vw;
 }
 
 #new_from_share {
-  margin-top: 30px;
+  width: 60%;
+}
+
+.copy {
+  width: 24vw;
+  height: 9vw;
 }
 
 .copy:hover {
@@ -431,15 +471,373 @@ input:disabled {
   color: var(--alt);
 }
 
+#string_display,
 #stats_display {
-  font-size: 16px;
+  font-size: 4vw;
+  height: 9vw;
+  overflow-wrap: break-word;
 }
 
-#string_display {
-  font-size: 14px;
-  height: 30px;
-  overflow-wrap: break-word;
-  margin-top: 10px;
-  margin-right: 40px;
-  margin-left: 40px;
+@media screen and (min-width: 470px) {
+  table {
+    width: 60vw;
+  }
+
+  input {
+    font-size: 2.7vw;
+  }
+
+  .reset,
+  .mode-selector {
+    height: 5vw;
+    width: 22vw;
+  }
+
+  .game-heading {
+    font-size: 6vw;
+  }
+
+  .game-subheading {
+    font-size: 2.7vw;
+  }
+
+  a {
+    font-size: 2.7vw;
+  }
+
+  footer .footnote {
+    font-size: 2.7vw;
+  }
+
+  #difficulty_settings {
+    height: 44vw;
+    width: 84vw;
+  }
+
+  .diff {
+    width: 18vw;
+    height: 10vw;
+  }
+
+  .confirm {
+    width: 24vw;
+    height: 11vw;
+  }
+
+  .warning {
+    font-size: 3.3vw;
+  }
+
+  #win_screen {
+    height: 66vw;
+    width: 80vw;
+  }
+
+  #winscreen-heading {
+    font-size: 5vw;
+  }
+
+  #stats {
+    width: 70vw;
+    height: 30vw;
+  }
+
+  #stats h3 {
+    font-size: 4vw;
+  }
+
+  #new_puzzle,
+  #share {
+    width: 25vw;
+    height: 10vw;
+  }
+
+  .stat-block {
+    height: 18vw;
+  }
+
+  .stat-block h4 {
+    font-size: 2.5vw;
+  }
+
+  #share_screen {
+    height: 70vw;
+    width: 70vw;
+  }
+
+  #share_screen .heading {
+    font-size: 3.5vw;
+  }
+
+  #new_from_share {
+    width: 30vw;
+    height: 10vw;
+    font-size: 2.4vw;
+  }
+}
+
+@media screen and (min-width: 670px) {
+  table {
+    width: 40vw;
+  }
+
+  input {
+    font-size: 1.8vw;
+  }
+
+  .marker-holder {
+    font-size: 1.7vw;
+  }
+
+  h1.game-heading {
+    font-size: 4vw;
+  }
+
+  p.game-subheading {
+    font-size: 1.8vw;
+  }
+  header a {
+    font-size: 1.8vw;
+  }
+
+  .reset,
+  .mode-selector {
+    width: 10vw;
+    height: 3vw;
+    font-size: 1.5vw;
+  }
+
+  footer .footnote {
+    font-size: 1.5vw;
+  }
+
+  #difficulty_settings {
+    height: 30vw;
+    width: 60vw;
+  }
+
+  .diff {
+    width: 12vw;
+    height: 5vw;
+    font-size: 2vw;
+  }
+
+  .confirm {
+    width: 18vw;
+    height: 7vw;
+    font-size: 2.3vw;
+  }
+
+  .warning {
+    height: 3vw;
+    font-size: 2vw;
+  }
+
+  #win_screen {
+    height: 50vw;
+    width: 60vw;
+  }
+
+  #winscreen-heading {
+    font-size: 3vw;
+  }
+
+  #winscreen-subheading {
+    font-size: 2.4vw;
+  }
+
+  #stats {
+    width: 50vw;
+    height: 26vw;
+  }
+
+  #stats h3 {
+    font-size: 2.4vw;
+  }
+
+  .stat-holder {
+    width: 50vw;
+  }
+
+  .stat-block {
+    width: 20vw;
+    height: 16vw;
+  }
+
+  .stat-block h4 {
+    font-size: 2vw;
+  }
+
+  .winscreen-buttons-div {
+    width: 50vw;
+  }
+
+  #new_puzzle,
+  #share {
+    width: 20vw;
+    height: 8vw;
+    font-size: 2vw;
+  }
+
+  #share_screen {
+    height: 48vw;
+    width: 50vw;
+  }
+
+  #share_screen .heading {
+    font-size: 2vw;
+  }
+
+  button.copy.btn {
+    width: 12vw;
+    height: 4vw;
+  }
+
+  #new_from_share {
+    width: 20vw;
+    height: 8vw;
+    font-size: 1.8vw;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  main {
+    padding: 2vw;
+    height: 27vw;
+  }
+
+  table {
+    width: 30vw;
+  }
+
+  input {
+    font-size: 1vw;
+  }
+
+  .marker-holder {
+    font-size: 1.3vw;
+  }
+
+  .game-heading {
+    font-size: 3vw;
+  }
+
+  .game-subheading {
+    font-size: 1vw;
+  }
+  a {
+    font-size: 1vw;
+  }
+
+  .reset,
+  .mode-selector {
+    width: 10vw;
+    height: 2vw;
+    font-size: 1vw;
+  }
+
+  footer .footnote {
+    font-size: 1vw;
+  }
+
+  #difficulty_settings {
+    height: 25vw;
+    width: 44vw;
+  }
+
+  .heading {
+    font-size: 2.5vw;
+  }
+
+  .diff {
+    width: 8.5vw;
+    height: 5vw;
+    font-size: 1.3vw;
+  }
+
+  .confirm {
+    width: 10vw;
+    height: 5vw;
+    font-size: 1.4vw;
+  }
+
+  .warning {
+    height: 2vw;
+    font-size: 1.5vw;
+  }
+
+  #win_screen {
+    height: 30vw;
+    width: 38vw;
+  }
+
+  #winscreen-heading {
+    font-size: 2vw;
+  }
+
+  #winscreen-subheading {
+    font-size: 1.2vw;
+  }
+
+  #stats {
+    width: 33vw;
+    height: 14vw;
+  }
+
+  #stats h3 {
+    font-size: 1.3vw;
+  }
+
+  .stat-holder {
+    width: 30vw;
+  }
+
+  .stat-block {
+    width: 12vw;
+    height: 8vw;
+  }
+
+  .stat-block h4 {
+    font-size: 1.3vw;
+  }
+
+  .winscreen-buttons-div {
+    width: 33vw;
+  }
+
+  #new_puzzle,
+  #share {
+    width: 12vw;
+    height: 5vw;
+    font-size: 1.1vw;
+  }
+
+  #share_screen {
+    height: 33vw;
+    width: 34vw;
+  }
+
+  #share_screen .heading {
+    font-size: 1.5vw;
+  }
+
+  button.copy.btn {
+    width: 10vw;
+    height: 2vw;
+  }
+
+  .share-block {
+    height: 10vw;
+  }
+
+  #stats_display,
+  #string_display {
+    height: 6.5vw;
+  }
+
+  #new_from_share {
+    width: 14vw;
+    height: 4vw;
+    font-size: 1vw;
+  }
 }
