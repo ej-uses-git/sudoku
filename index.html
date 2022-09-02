@@ -1,53 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Play Sudoku</title>
-    <link rel="stylesheet" href="./style.css"/>
-    <link rel="icon" type="image/x-icon" href="./light_favicon.ico"/>
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="icon" type="image/x-icon" href="./light_favicon.ico" />
     <script>
-      let root = document.querySelector(':root');
+      let root = document.querySelector(":root");
       let favicon = document.querySelector('link[rel="icon"]');
-      if(localStorage.getItem('colormode') === 'dark'){
-          //we are in dark mode
-          root.style.setProperty('--main', 'black');
-          root.style.setProperty('--second', 'white');
-          root.style.setProperty('--alt', '#dfdfdf');
-          root.style.setProperty('--greener', '#005000');
-          favicon.setAttribute('href', './dark_favicon.ico');
+      if (localStorage.getItem("colormode") === "dark") {
+        //we are in dark mode
+        root.style.setProperty("--main", "black");
+        root.style.setProperty("--second", "white");
+        root.style.setProperty("--alt", "#dfdfdf");
+        root.style.setProperty("--greener", "#005000");
+        favicon.setAttribute("href", "./dark_favicon.ico");
       } else {
-          //default: light mode
-          localStorage.setItem('colormode', 'light');
-          root.style.setProperty('--main', 'white');
-          root.style.setProperty('--second', 'black');
-          root.style.setProperty('--alt', '#333');
-          root.style.setProperty('--greener', '#009a00');
-          favicon.setAttribute('href', './light_favicon.ico');
+        //default: light mode
+        localStorage.setItem("colormode", "light");
+        root.style.setProperty("--main", "white");
+        root.style.setProperty("--second", "black");
+        root.style.setProperty("--alt", "#333");
+        root.style.setProperty("--greener", "#009a00");
+        favicon.setAttribute("href", "./light_favicon.ico");
       }
     </script>
-</head>
-<body>
+  </head>
+  <body>
     <div id="share_screen" class="hidden">
       <div id="share_stats" class="share-block">
-        <h2 class="heading">Share your statistics: <p id="stats_display" disabled></p></h2>
-        <button id="copy_button_1" class="copy btn">Copy to clipboard</button>
+        <h2 class="heading">
+          Share your statistics:
+          <div id="stats_display" disabled></div>
+        </h2>
+        <button id="copy_button_1" class="copy btn">Copy to Clipboard</button>
       </div>
       <div id="share_string" class="share-block">
-        <h2 class="heading">Share the puzzle code: <div id="string_display" disabled></div></h2>
-        <button id="copy_button_2" class="copy btn">Copy to clipboard</button>
+        <h2 class="heading">
+          Share the puzzle code:
+          <div id="string_display" disabled></div>
+        </h2>
+        <button id="copy_button_2" class="copy btn">Copy to Clipboard</button>
       </div>
       <button id="new_from_share" class="winscreen-btn">New Puzzle</button>
     </div>
     <div id="win_screen" class="hidden">
-        <h2 class="heading">CONGRATULATIONS!</h1>
-        <h3 class="subheading">You solved the puzzle.</h3>
-        <div id="stats">
-          <div class="stat-label">
-            <h3>Your stats for this puzzle:</h3>
-          </div>
-          <div class="stat-holder">
+      <div class="headings-div">
+        <h2 class="heading" id="winscreen-heading">CONGRATULATIONS!</h2>
+        <h3 class="subheading" id="winscreen-subheading">
+          You solved the puzzle.
+        </h3>
+      </div>
+      <div id="stats">
+        <div class="stat-label">
+          <h3>Your stats for this puzzle:</h3>
+        </div>
+        <div class="stat-holder">
+          <div class="stat-container">
             <div id="number_of_mistakes" class="stat-block">
               <h4>Number of mistakes:</h4>
               <div id="mistake_stat"></div>
@@ -58,45 +69,50 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="winscreen-buttons-div">
         <button id="new_puzzle" class="winscreen-btn">New Puzzle</button>
         <button id="share" class="winscreen-btn">Share</button>
+      </div>
     </div>
     <div id="difficulty_settings">
       <h2 class="heading">SELECT DIFFICULTY:</h2>
-      <button class="diff btn" id="easy">Easy</button>
-      <button class="diff btn" id="medium">Medium</button>
-      <button class="diff btn" id="hard">Hard</button>
-      <button class="diff btn" id="very">Very Hard</button>
+      <div class="diff-btn-holder">
+        <button class="diff btn" id="easy">Easy</button>
+        <button class="diff btn" id="medium">Medium</button>
+        <button class="diff btn" id="hard">Hard</button>
+        <button class="diff btn" id="very">Very Hard</button>
+      </div>
       <button class="confirm btn">CONFIRM</button>
       <p class="warning"></p>
     </div>
     <header>
-        <h1>PLAY SUDOKU</h1>
-        <p>(Click <a href="./rules.html" target="_blank">here</a> for the rules)</p>
+      <h1 class="game-heading">PLAY SUDOKU</h1>
+      <p class="game-subheading">
+        (Click <a href="./rules.html" target="_blank">here</a> for the rules)
+      </p>
     </header>
     <main>
-        <table class="hidden">
-
-        </table>
-        <div class="marker-holder hidden">
-          <ul id="markers">
-            <li id="marker_1" class="marker">1</li>
-            <li id="marker_2" class="marker">2</li>
-            <li id="marker_3" class="marker">3</li>
-            <li id="marker_4" class="marker">4</li>
-            <li id="marker_5" class="marker">5</li>
-            <li id="marker_6" class="marker">6</li>
-            <li id="marker_7" class="marker">7</li>
-            <li id="marker_8" class="marker">8</li>
-            <li id="marker_9" class="marker">9</li>
-          </ul>
-        </div>
+      <table class="hidden"></table>
+      <div class="marker-holder hidden">
+        <ul id="markers">
+          <li id="marker_1" class="marker">1</li>
+          <li id="marker_2" class="marker">2</li>
+          <li id="marker_3" class="marker">3</li>
+          <li id="marker_4" class="marker">4</li>
+          <li id="marker_5" class="marker">5</li>
+          <li id="marker_6" class="marker">6</li>
+          <li id="marker_7" class="marker">7</li>
+          <li id="marker_8" class="marker">8</li>
+          <li id="marker_9" class="marker">9</li>
+        </ul>
+      </div>
     </main>
     <footer>
-        <button class="reset btn hidden">New Puzzle</button>
-        <button class="mode-selector btn">Light Mode</button>
-        <p class="footnote">Website coded and designed by Evyatar Shafran</p>
+      <button class="reset btn hidden">New Puzzle</button>
+      <button class="mode-selector btn">Light Mode</button>
+      <p class="footnote">Website coded and designed by Evyatar Shafran</p>
     </footer>
     <script type="text/javascript" src="./script.js"></script>
-</body>
+  </body>
 </html>
