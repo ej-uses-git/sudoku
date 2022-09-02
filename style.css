@@ -700,11 +700,6 @@ input:disabled {
   }
 }
 
-
-
-
-
-
 @media screen and (min-width: 900px) {
   main {
     padding: 2vw;
@@ -770,7 +765,7 @@ input:disabled {
     height: 2vw;
     font-size: 1.5vw;
   }
-  
+
   #win_screen {
     height: 30vw;
     width: 38vw;
@@ -835,7 +830,8 @@ input:disabled {
     height: 10vw;
   }
 
-  #stats_display, #string_display {
+  #stats_display,
+  #string_display {
     height: 6.5vw;
   }
 
